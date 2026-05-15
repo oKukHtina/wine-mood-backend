@@ -1,0 +1,6 @@
+CREATE TABLE categories (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    image VARCHAR(500)
+);
