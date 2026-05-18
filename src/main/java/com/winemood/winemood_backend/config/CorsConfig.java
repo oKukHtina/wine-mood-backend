@@ -14,10 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins(
-                                "https://winemood.vercel.app",
-                                "https://winemood-jrg89t3zu-nvlasenkos-projects.vercel.app"
-                        )
+                        .allowedOriginPatterns("https://*.vercel.app")
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(false);
