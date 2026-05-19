@@ -1,6 +1,6 @@
 package com.winemood.winemood_backend.service.impl;
 
-import com.winemood.winemood_backend.dto.CategoryResponse;
+import com.winemood.winemood_backend.dto.CategoryUiResponse;
 import com.winemood.winemood_backend.mapper.CategoryMapper;
 import com.winemood.winemood_backend.repository.CategoryRepository;
 import com.winemood.winemood_backend.service.CategoryService;
@@ -15,7 +15,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper mapper;
 
     @Override
-    public List<CategoryResponse> getAllCategories() {
+    public List<CategoryUiResponse> getAllCategories() {
         return repository.findAll()
                 .stream()
                 .map(mapper::toDto)
