@@ -1,6 +1,6 @@
 package com.winemood.winemood_backend.controller;
 
-import com.winemood.winemood_backend.dto.WineResponse;
+import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import com.winemood.winemood_backend.service.WineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,9 +27,9 @@ public class WineController {
     @ApiResponse(
             responseCode = "200",
             description = "Wines successfully retrieved",
-            content = @Content(schema = @Schema(implementation = WineResponse.class))
+            content = @Content(schema = @Schema(implementation = WineResponseDto.class))
     )
-    public List<WineResponse> getAllWines() {
+    public List<WineResponseDto> getAllWines() {
         return wineService.getAllWines();
     }
 
@@ -38,13 +38,13 @@ public class WineController {
     @ApiResponse(
             responseCode = "200",
             description = "Wine found",
-            content = @Content(schema = @Schema(implementation = WineResponse.class))
+            content = @Content(schema = @Schema(implementation = WineResponseDto.class))
     )
     @ApiResponse(
             responseCode = "404",
             description = "Wine not found"
     )
-    public WineResponse getWineById(@PathVariable Long id) {
+    public WineResponseDto getWineById(@PathVariable Long id) {
         return wineService.getWineById(id);
     }
 }

@@ -1,4 +1,4 @@
-package com.winemood.winemood_backend.dto;
+package com.winemood.winemood_backend.dto.response;
 
 import com.winemood.winemood_backend.enums.CategoryType;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WineResponse {
+public class WineResponseDto {
     private Long id;
     private String name;
     private CategoryType type;

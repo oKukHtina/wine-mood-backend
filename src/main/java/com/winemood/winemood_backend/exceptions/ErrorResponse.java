@@ -1,4 +1,4 @@
-package com.winemood.winemood_backend.dto;
+package com.winemood.winemood_backend.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

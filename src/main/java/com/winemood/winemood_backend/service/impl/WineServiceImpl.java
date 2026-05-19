@@ -1,6 +1,6 @@
 package com.winemood.winemood_backend.service.impl;
 
-import com.winemood.winemood_backend.dto.WineResponse;
+import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.WineMapper;
 import com.winemood.winemood_backend.repository.WineRepository;
@@ -13,11 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WineServiceImpl implements WineService {
     private final WineRepository repository;
-
     private final WineMapper mapper;
 
     @Override
-    public List<WineResponse> getAllWines() {
+    public List<WineResponseDto> getAllWines() {
         return repository.findAll()
                 .stream()
                 .map(mapper::toDto)
@@ -25,7 +24,7 @@ public class WineServiceImpl implements WineService {
     }
 
     @Override
-    public WineResponse getWineById(Long id) {
+    public WineResponseDto getWineById(Long id) {
        return repository.findById(id)
                .map(mapper::toDto)
                .orElseThrow(() -> new WineNotFoundException(id));

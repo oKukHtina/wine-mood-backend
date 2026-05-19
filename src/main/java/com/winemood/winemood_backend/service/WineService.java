@@ -1,11 +1,10 @@
 package com.winemood.winemood_backend.service;
 
-import com.winemood.winemood_backend.dto.WineResponse;
-
+import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import java.util.List;
 
 public interface WineService {
-    List<WineResponse> getAllWines();
+    List<WineResponseDto> getAllWines();
 
-    WineResponse getWineById(Long id);
+    WineResponseDto getWineById(Long id);
 }

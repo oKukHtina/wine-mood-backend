@@ -1,7 +1,7 @@
 package com.winemood.winemood_backend.controller;
 
-import com.winemood.winemood_backend.dto.CategoryUiResponse;
-import com.winemood.winemood_backend.dto.ErrorResponse;
+import com.winemood.winemood_backend.dto.response.CategoryUiResponseDto;
+import com.winemood.winemood_backend.exceptions.ErrorResponse;
 import com.winemood.winemood_backend.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ public class CategoryController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
     )
     @GetMapping
-    public List<CategoryUiResponse> getAllCategories() {
+    public List<CategoryUiResponseDto> getAllCategories() {
         return service.getAllCategories();
     }
 }

@@ -1,9 +1,8 @@
 package com.winemood.winemood_backend.service;
 
-import com.winemood.winemood_backend.dto.CategoryUiResponse;
-
+import com.winemood.winemood_backend.dto.response.CategoryUiResponseDto;
 import java.util.List;
 
 public interface CategoryService {
-    List<CategoryUiResponse> getAllCategories();
+    List<CategoryUiResponseDto> getAllCategories();
 }
