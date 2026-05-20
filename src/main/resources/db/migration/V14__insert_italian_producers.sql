@@ -1,0 +1,26 @@
+INSERT INTO producers (name, country_id, region, bottle_image_url)
+VALUES
+(
+'Antinori',
+2,
+'Tuscany',
+'https://example.com/bottle/fr.png'
+),
+(
+'Martini',
+2,
+'Piedmont',
+'https://example.com/bottle/fr.png'
+),
+(
+'Sassicaia',
+2,
+'Tuscany',
+'https://example.com/bottle/fr.png'
+),
+(
+'Ornellaia',
+2,
+'Tuscany',
+'https://example.com/bottle/fr.png'
+);
