@@ -10,31 +10,25 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "wines")
-public class Wine {
+@Table(name = "countries")
+public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    private Integer volumeMl;
-
     @NotBlank
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @ManyToOne
-    @JoinColumn(name = "producer_id")
-    private Producer producer;
+    @Column(nullable = false)
+    private String nationality;
 
     @NotBlank
     @Column(nullable = false)
-    private String imageUrl;
+    private String flagImageUrl;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String bottleImageUrl;
 }

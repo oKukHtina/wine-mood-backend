@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "wines")
-public class Wine {
+@Table(name = "producers")
+public class Producer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,21 +20,15 @@ public class Wine {
     @Column(nullable = false)
     private String name;
 
-    private Integer volumeMl;
-
-    @NotBlank
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @ManyToOne
-    @JoinColumn(name = "producer_id")
-    private Producer producer;
+    @JoinColumn(name = "country_id")
+    private Country country;
 
     @NotBlank
     @Column(nullable = false)
-    private String imageUrl;
+    private String region;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String bottleImageUrl;
 }
