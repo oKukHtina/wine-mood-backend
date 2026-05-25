@@ -27,8 +27,4 @@ public class Producer {
     @NotBlank
     @Column(nullable = false)
     private String region;
-
-    @NotBlank
-    @Column(nullable = false)
-    private String bottleImageUrl;
 }

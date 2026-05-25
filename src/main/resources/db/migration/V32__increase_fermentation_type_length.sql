@@ -1,0 +1,2 @@
+ALTER TABLE wines
+ALTER COLUMN fermentation_type TYPE VARCHAR(255);

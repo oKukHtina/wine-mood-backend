@@ -1,0 +1,1 @@
+ALTER TABLE producers DROP COLUMN bottle_image_url;
