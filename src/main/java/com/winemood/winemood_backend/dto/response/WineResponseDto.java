@@ -1,10 +1,13 @@
 package com.winemood.winemood_backend.dto.response;
 
-import com.winemood.winemood_backend.enums.CategoryType;
+import com.winemood.winemood_backend.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,4 +20,13 @@ public class WineResponseDto {
     private Integer volumeMl;
     private String description;
     private String imageUrl;
+
+    private BigDecimal alcoholPercentage;
+    private SweetnessLevel sweetnessLevel;
+    private GrapeVariety grapeVariety;
+    private Integer agingMonths;
+    private Set<EnvironmentalAttribute> environmentalAttributes;
+    private FermentationType fermentationType;
+    private Integer vintage;
+    private String appellation;
 }

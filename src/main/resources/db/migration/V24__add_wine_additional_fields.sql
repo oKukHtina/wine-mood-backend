@@ -1,0 +1,8 @@
+ALTER TABLE wines
+ADD COLUMN fermentation_type VARCHAR(50);
+
+ALTER TABLE wines
+ADD COLUMN vintage INTEGER;
+
+ALTER TABLE wines
+ADD COLUMN appellation VARCHAR(100);
