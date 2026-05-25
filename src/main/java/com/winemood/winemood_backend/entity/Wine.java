@@ -1,7 +1,6 @@
 package com.winemood.winemood_backend.entity;
 
 import com.winemood.winemood_backend.enums.EnvironmentalAttribute;
-import com.winemood.winemood_backend.enums.FermentationType;
 import com.winemood.winemood_backend.enums.GrapeVariety;
 import com.winemood.winemood_backend.enums.SweetnessLevel;
 import jakarta.persistence.*;
@@ -9,9 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -46,8 +43,6 @@ public class Wine {
     @Column(nullable = false)
     private String imageUrl;
 
-    ///////////
-
     @Column(precision = 4, scale = 1)
     private BigDecimal alcoholPercentage;
 
@@ -68,8 +63,7 @@ public class Wine {
     @Column(name = "environmental_attribute")
     private Set<EnvironmentalAttribute> environmentalAttributes;
 
-    @Enumerated(EnumType.STRING)
-    private FermentationType fermentationType;
+    private String fermentationType;
 
     @Column(name = "vintage")
     private Integer vintage;

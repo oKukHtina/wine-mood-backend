@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -20,13 +19,15 @@ public class WineResponseDto {
     private Integer volumeMl;
     private String description;
     private String imageUrl;
-
     private BigDecimal alcoholPercentage;
     private SweetnessLevel sweetnessLevel;
     private GrapeVariety grapeVariety;
     private Integer agingMonths;
     private Set<EnvironmentalAttribute> environmentalAttributes;
-    private FermentationType fermentationType;
+    private String fermentationType;
     private Integer vintage;
     private String appellation;
+    private String producerName;
+    private String countryName;
+    private String region;
 }

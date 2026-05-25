@@ -10,5 +10,14 @@ public enum GrapeVariety {
     CHARDONNAY,
     GRENACHE,
     SYRAH,
-    BLEND
-    }
+    BLEND,
+    TOURIGA_NACIONAL,
+    LOUREIRO,
+    ARINTO,
+    NEBBIOLO,
+    MONTEPULCIANO,
+    MACABEO,
+    PARELLADA,
+    ZINFANDEL,
+    MUSCAT
+}
