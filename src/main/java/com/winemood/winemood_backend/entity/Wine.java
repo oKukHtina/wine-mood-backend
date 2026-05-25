@@ -1,10 +1,18 @@
 package com.winemood.winemood_backend.entity;
 
+import com.winemood.winemood_backend.enums.EnvironmentalAttribute;
+import com.winemood.winemood_backend.enums.FermentationType;
+import com.winemood.winemood_backend.enums.GrapeVariety;
+import com.winemood.winemood_backend.enums.SweetnessLevel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,4 +45,35 @@ public class Wine {
     @NotBlank
     @Column(nullable = false)
     private String imageUrl;
+
+    ///////////
+
+    @Column(precision = 4, scale = 1)
+    private BigDecimal alcoholPercentage;
+
+    @Enumerated(EnumType.STRING)
+    private SweetnessLevel sweetnessLevel;
+
+    @Enumerated(EnumType.STRING)
+    private GrapeVariety grapeVariety;
+
+    private Integer agingMonths;
+
+    @ElementCollection(targetClass = EnvironmentalAttribute.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "wine_environmental_attributes",
+            joinColumns = @JoinColumn(name = "wine_id")
+    )
+    @Column(name = "environmental_attribute")
+    private Set<EnvironmentalAttribute> environmentalAttributes;
+
+    @Enumerated(EnumType.STRING)
+    private FermentationType fermentationType;
+
+    @Column(name = "vintage")
+    private Integer vintage;
+
+    @Column(length = 100)
+    private String appellation;
 }
