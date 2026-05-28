@@ -30,4 +30,6 @@ public class WineResponseDto {
     private String producerName;
     private String countryName;
     private String region;
+    private Double rating;
+    private Set<FoodResponseDto> foodPairings;
 }
