@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CountryResponseDto {
     private Long id;
+    private String name;
     private String nationality;
     private String flagImageUrl;
     private String bottleImageUrl;

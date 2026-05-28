@@ -2,10 +2,10 @@ package com.winemood.winemood_backend.enums;
 
 public enum FoodCategory {
     MEAT,
-    SEAFOOD,
-    PASTA_AND_PIZZA,
+    FISH_SEAFOOD,
+    PASTA_PIZZA,
     CHEESE,
-    SNACKS,
-    WORLD_CUISINE,
+    LIGHT_DISHES,
+    SPICES_CUISINES,
     DESSERT
 }

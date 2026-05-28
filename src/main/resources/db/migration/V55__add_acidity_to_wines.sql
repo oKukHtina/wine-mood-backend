@@ -1,0 +1,2 @@
+ALTER TABLE wines
+ADD COLUMN acidity VARCHAR(20);

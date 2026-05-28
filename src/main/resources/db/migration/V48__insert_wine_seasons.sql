@@ -1,0 +1,61 @@
+INSERT INTO wine_seasons (wine_id, season) VALUES
+
+(21, 'AUTUMN_SPICY'),
+(21, 'WINTER'),
+
+(22, 'SPRING'),
+(22, 'SUMMER'),
+
+(23, 'SPRING'),
+(23, 'SUMMER'),
+
+(24, 'AUTUMN_SPICY'),
+(24, 'WINTER'),
+
+(25, 'AUTUMN_SPICY'),
+(25, 'WINTER'),
+
+(26, 'SPRING'),
+(26, 'SUMMER'),
+
+(27, 'SPRING'),
+(27, 'SUMMER'),
+
+(28, 'AUTUMN_SPICY'),
+(28, 'WINTER'),
+
+(29, 'AUTUMN_SPICY'),
+(29, 'WINTER'),
+
+(30, 'SPRING'),
+(30, 'SUMMER'),
+
+(31, 'SPRING'),
+(31, 'SUMMER'),
+
+(32, 'AUTUMN_SPICY'),
+(32, 'WINTER'),
+
+(33, 'SPRING'),
+(33, 'SUMMER'),
+
+(34, 'AUTUMN_SPICY'),
+(34, 'WINTER'),
+
+(35, 'WINTER'),
+(35, 'AUTUMN_SPICY'),
+
+(36, 'SPRING'),
+(36, 'SUMMER'),
+
+(37, 'WINTER'),
+(37, 'AUTUMN_SPICY'),
+
+(38, 'WINTER'),
+(38, 'AUTUMN_SPICY'),
+
+(39, 'SPRING'),
+(39, 'SUMMER'),
+
+(40, 'SPRING'),
+(40, 'SUMMER');

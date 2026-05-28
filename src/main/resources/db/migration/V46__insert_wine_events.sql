@@ -1,0 +1,61 @@
+INSERT INTO wine_events (wine_id, event) VALUES
+
+(21, 'DINNER_WITH_FRIENDS'),
+(21, 'DATE'),
+
+(22, 'DATE'),
+(22, 'PICNIC'),
+
+(23, 'PARTY'),
+(23, 'GIFT'),
+
+(24, 'DINNER_WITH_FRIENDS'),
+(24, 'GIFT'),
+
+(25, 'DINNER_WITH_FRIENDS'),
+(25, 'GIFT'),
+
+(26, 'DATE'),
+(26, 'PICNIC'),
+
+(27, 'PARTY'),
+(27, 'GIFT'),
+
+(28, 'DINNER_WITH_FRIENDS'),
+(28, 'GIFT'),
+
+(29, 'DINNER_WITH_FRIENDS'),
+(29, 'GIFT'),
+
+(30, 'DATE'),
+(30, 'PICNIC'),
+
+(31, 'PARTY'),
+(31, 'GIFT'),
+
+(32, 'DINNER_WITH_FRIENDS'),
+(32, 'GIFT'),
+
+(33, 'DATE'),
+(33, 'PICNIC'),
+
+(34, 'DINNER_WITH_FRIENDS'),
+(34, 'GIFT'),
+
+(35, 'PARTY'),
+(35, 'DINNER_WITH_FRIENDS'),
+
+(36, 'PICNIC'),
+(36, 'PARTY'),
+
+(37, 'DINNER_WITH_FRIENDS'),
+(37, 'GIFT'),
+
+(38, 'GIFT'),
+(38, 'DINNER_WITH_FRIENDS'),
+
+(39, 'DATE'),
+(39, 'PICNIC'),
+
+(40, 'PICNIC'),
+(40, 'PARTY');

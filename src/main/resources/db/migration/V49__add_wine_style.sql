@@ -1,0 +1,2 @@
+ALTER TABLE wines
+ADD COLUMN wine_style VARCHAR(50);

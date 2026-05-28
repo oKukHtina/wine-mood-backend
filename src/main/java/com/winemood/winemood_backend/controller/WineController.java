@@ -1,5 +1,7 @@
 package com.winemood.winemood_backend.controller;
 
+import com.winemood.winemood_backend.dto.request.WineFilterRequestDto;
+import com.winemood.winemood_backend.dto.response.WineCatalogResponseDto;
 import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import com.winemood.winemood_backend.service.WineService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,10 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class WineController {
             description = "Wines successfully retrieved",
             content = @Content(schema = @Schema(implementation = WineResponseDto.class))
     )
-    public List<WineResponseDto> getAllWines() {
+    public List<WineCatalogResponseDto> getAllWines() {
         return wineService.getAllWines();
     }
 
@@ -45,5 +44,36 @@ public class WineController {
     )
     public WineResponseDto getWineById(@PathVariable Long id) {
         return wineService.getWineById(id);
+    }
+
+    @PostMapping("/filter")
+    @Operation(
+            summary = "Filter wines",
+            description = """
+                Returns wines filtered by selected parameters.
+                
+                You can combine multiple filters:
+                - wine type
+                - sweetness level
+                - country
+                - grape variety
+                - wine style
+                - acidity
+                - aroma notes
+                - moods
+                - food pairing
+                """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Filtered wines successfully retrieved",
+            content = @Content(
+                    schema = @Schema(implementation = WineCatalogResponseDto.class)
+            )
+    )
+    public List<WineCatalogResponseDto> filterWines(
+            @RequestBody WineFilterRequestDto filterRequest
+    ) {
+        return wineService.filterWines(filterRequest);
     }
 }
