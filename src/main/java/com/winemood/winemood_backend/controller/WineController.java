@@ -25,7 +25,7 @@ public class WineController {
     @ApiResponse(
             responseCode = "200",
             description = "Wines successfully retrieved",
-            content = @Content(schema = @Schema(implementation = WineResponseDto.class))
+            content = @Content(schema = @Schema(implementation = WineCatalogResponseDto.class))
     )
     public List<WineCatalogResponseDto> getAllWines() {
         return wineService.getAllWines();
