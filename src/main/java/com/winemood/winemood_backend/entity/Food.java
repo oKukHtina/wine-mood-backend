@@ -1,7 +1,5 @@
 package com.winemood.winemood_backend.entity;
 
-import com.winemood.winemood_backend.enums.FoodCategory;
-import com.winemood.winemood_backend.enums.FoodType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +17,12 @@ public class Food {
 
     private String foodImageUrl;
 
-    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true)
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "food_category_id")
     private FoodCategory foodCategory;
 
-    @Enumerated(EnumType.STRING)
-    private FoodType foodType;
+
 }

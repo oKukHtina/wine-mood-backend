@@ -1,0 +1,2 @@
+ALTER TABLE wine_aroma_notes
+ADD COLUMN wine_taste_profile_id BIGINT;

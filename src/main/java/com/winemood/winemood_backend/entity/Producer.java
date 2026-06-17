@@ -17,7 +17,7 @@ public class Producer {
     private Long id;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)//
     private String name;
 
     @ManyToOne

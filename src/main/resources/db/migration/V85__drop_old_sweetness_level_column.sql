@@ -1,0 +1,2 @@
+ALTER TABLE wine_taste_profiles
+DROP COLUMN sweetness_level;
