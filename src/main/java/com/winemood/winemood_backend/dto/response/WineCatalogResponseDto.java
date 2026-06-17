@@ -1,7 +1,6 @@
 package com.winemood.winemood_backend.dto.response;
 
 import com.winemood.winemood_backend.enums.CategoryType;
-import com.winemood.winemood_backend.enums.SweetnessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ public class WineCatalogResponseDto {
     private Long id;
     private String name;
     private CategoryType type;
-    private SweetnessLevel sweetnessLevel;
+    private SweetnessLevelResponseDto sweetnessLevel;
     private Integer volumeMl;
     private String countryName;
     private String imageUrl;

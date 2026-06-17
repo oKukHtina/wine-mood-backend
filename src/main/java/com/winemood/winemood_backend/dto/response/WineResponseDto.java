@@ -20,8 +20,8 @@ public class WineResponseDto {
     private String description;
     private String imageUrl;
     private BigDecimal alcoholPercentage;
-    private SweetnessLevel sweetnessLevel;
-    private GrapeVariety grapeVariety;
+    private SweetnessLevelResponseDto sweetnessLevel;
+    private GrapeVarietiesResponseDto grapeVariety;
     private Integer agingMonths;
     private Set<EnvironmentalAttribute> environmentalAttributes;
     private String fermentationType;
@@ -31,5 +31,7 @@ public class WineResponseDto {
     private String countryName;
     private String region;
     private Double rating;
+    private AcidityResponseDto acidity;
     private Set<FoodResponseDto> foodPairings;
+    private WineStyleResponseDto wineStyle;
 }

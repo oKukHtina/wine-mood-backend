@@ -1,6 +1,7 @@
 package com.winemood.winemood_backend.controller;
 
 import com.winemood.winemood_backend.dto.request.WineFilterRequestDto;
+import com.winemood.winemood_backend.dto.response.ApiResponseDto;
 import com.winemood.winemood_backend.dto.response.WineCatalogResponseDto;
 import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import com.winemood.winemood_backend.service.WineService;
@@ -10,7 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,8 +30,8 @@ public class WineController {
             description = "Wines successfully retrieved",
             content = @Content(schema = @Schema(implementation = WineCatalogResponseDto.class))
     )
-    public List<WineCatalogResponseDto> getAllWines() {
-        return wineService.getAllWines();
+    public List<WineCatalogResponseDto> getAllWines(Pageable pageable) {
+        return wineService.getAllWines(pageable);
     }
 
     @GetMapping("/{id}")
@@ -71,9 +74,10 @@ public class WineController {
                     schema = @Schema(implementation = WineCatalogResponseDto.class)
             )
     )
-    public List<WineCatalogResponseDto> filterWines(
-            @RequestBody WineFilterRequestDto filterRequest
+    public ApiResponseDto<List<WineCatalogResponseDto>> filterWines(
+            @RequestBody WineFilterRequestDto filterRequest,
+            Pageable pageable
     ) {
-        return wineService.filterWines(filterRequest);
+        return wineService.filterWines(filterRequest,pageable);
     }
 }

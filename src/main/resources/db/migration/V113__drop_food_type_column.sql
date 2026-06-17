@@ -1,0 +1,1 @@
+ALTER TABLE foods DROP COLUMN food_type;

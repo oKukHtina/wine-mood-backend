@@ -1,0 +1,5 @@
+ALTER TABLE wine_environmental_attributes
+ADD CONSTRAINT fk_wine_environmental_attributes_taste_profile
+FOREIGN KEY (wine_taste_profile_id)
+REFERENCES wine_taste_profiles(id)
+ON DELETE CASCADE;

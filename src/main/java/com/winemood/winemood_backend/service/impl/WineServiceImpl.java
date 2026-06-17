@@ -1,6 +1,8 @@
 package com.winemood.winemood_backend.service.impl;
 
 import com.winemood.winemood_backend.dto.request.WineFilterRequestDto;
+import com.winemood.winemood_backend.dto.response.ApiResponseDto;
+import com.winemood.winemood_backend.dto.response.Meta;
 import com.winemood.winemood_backend.dto.response.WineCatalogResponseDto;
 import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import com.winemood.winemood_backend.entity.Wine;
@@ -10,6 +12,8 @@ import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.service.WineService;
 import com.winemood.winemood_backend.specification.WineSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -21,8 +25,8 @@ public class WineServiceImpl implements WineService {
     private final WineMapper mapper;
 
     @Override
-    public List<WineCatalogResponseDto> getAllWines() {
-        return repository.findAll()
+    public List<WineCatalogResponseDto> getAllWines(Pageable pageable) {
+        return repository.findAll(pageable)
                 .stream()
                 .map(mapper::toCatalogDto)
                 .toList();
@@ -36,7 +40,7 @@ public class WineServiceImpl implements WineService {
     }
 
     @Override
-    public List<WineCatalogResponseDto> filterWines(WineFilterRequestDto dto) {
+    public ApiResponseDto<List<WineCatalogResponseDto>> filterWines(WineFilterRequestDto dto, Pageable pageable) {
         Specification<Wine> spec = Specification.unrestricted();
 
         if (dto.getWineTypes() != null && !dto.getWineTypes().isEmpty()) {
@@ -71,13 +75,34 @@ public class WineServiceImpl implements WineService {
             spec = spec.and(WineSpecification.hasMoods(dto.getMoods()));
         }
 
-        if (dto.getFoodTypes() != null && !dto.getFoodTypes().isEmpty()) {
-            spec = spec.and(WineSpecification.hasFoodTypes(dto.getFoodTypes()));
+
+
+        if (dto.getEvents() != null && !dto.getEvents().isEmpty()) {
+            spec = spec.and(WineSpecification.hasEvents(dto.getEvents()));
         }
 
-        return repository.findAll(spec)
-                .stream()
-                .map(mapper::toCatalogDto)
-                .toList();
+        if (dto.getSeasons() != null && !dto.getSeasons().isEmpty()) {
+            spec = spec.and(WineSpecification.hasSeasons(dto.getSeasons()));
+        }
+
+
+
+        if (dto.getFoodName() != null && !dto.getFoodName().isEmpty()) {
+            spec = spec.and(WineSpecification.hasFoods(dto.getFoodName()));
+        }
+
+        Page<Wine> page = repository.findAll(spec, pageable);
+
+        List<WineCatalogResponseDto> data =
+                page.map(mapper::toCatalogDto).getContent();
+
+        Meta meta = new Meta(
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.getNumber(),
+                page.getSize()
+        );
+
+        return new ApiResponseDto<>(data, meta);
     }
 }

@@ -1,0 +1,2 @@
+ALTER TABLE wine_environmental_attributes
+ADD COLUMN wine_taste_profile_id BIGINT;
