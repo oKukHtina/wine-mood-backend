@@ -1,6 +1,7 @@
 package com.winemood.winemood_backend.service.impl;
 
 import com.winemood.winemood_backend.dto.response.FoodFilterGroupResponseDto;
+import com.winemood.winemood_backend.dto.response.FoodFilterOptionResponseDto;
 import com.winemood.winemood_backend.dto.response.FoodResponseDto;
 import com.winemood.winemood_backend.entity.Food;
 import com.winemood.winemood_backend.mapper.FoodMapper;
@@ -8,7 +9,6 @@ import com.winemood.winemood_backend.repository.FoodRepository;
 import com.winemood.winemood_backend.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,19 +48,18 @@ public class FoodServiceImpl implements FoodService {
 
         List<Food> foods = foodRepository.findAll();
 
-        List<FoodResponseDto> foodDtos = foods.stream()
-                .map(foodMapper::toDto)
-                .toList();
-
-        Map<String, List<FoodResponseDto>> grouped =
-                foodDtos.stream()
+        Map<String, List<FoodFilterOptionResponseDto>> grouped =
+                foods.stream()
                         .collect(Collectors.groupingBy(
-                                dto -> dto.getFoodCategory().getName()
+                                food -> food.getFoodCategory().getName(),
+                                Collectors.mapping(
+                                        foodMapper::toFilterDto,
+                                        Collectors.toList()
+                                )
                         ));
 
         return grouped.entrySet().stream()
                 .map(entry -> new FoodFilterGroupResponseDto(
-                        null,
                         entry.getKey(),
                         entry.getValue()
                 ))

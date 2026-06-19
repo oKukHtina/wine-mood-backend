@@ -1,6 +1,7 @@
 package com.winemood.winemood_backend.service.impl;
 
 import com.winemood.winemood_backend.dto.response.CountryResponseDto;
+import com.winemood.winemood_backend.dto.response.FilterCountryOptionResponseDto;
 import com.winemood.winemood_backend.exceptions.CountryNotFoundException;
 import com.winemood.winemood_backend.mapper.CountryMapper;
 import com.winemood.winemood_backend.repository.CountryRepository;
@@ -28,5 +29,13 @@ public class CountryServiceImpl implements CountryService {
         return repository.findById(id)
                 .map(mapper::toDto)
                 .orElseThrow(() -> new CountryNotFoundException(id));
+    }
+
+    @Override
+    public List<FilterCountryOptionResponseDto> getCountryFilterOptions() {
+        return repository.findAll()
+                .stream()
+                .map(mapper::toFilterDto)
+                .toList();
     }
 }

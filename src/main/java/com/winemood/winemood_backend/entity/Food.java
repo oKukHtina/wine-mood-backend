@@ -23,6 +23,4 @@ public class Food {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_category_id")
     private FoodCategory foodCategory;
-
-
 }

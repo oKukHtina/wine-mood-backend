@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +32,11 @@ public class WineController {
             description = "Wines successfully retrieved",
             content = @Content(schema = @Schema(implementation = WineCatalogResponseDto.class))
     )
-    public List<WineCatalogResponseDto> getAllWines(Pageable pageable) {
+    public List<WineCatalogResponseDto> getAllWines(
+            @ParameterObject
+            @PageableDefault(page = 0, size = 20, sort = "id")
+            Pageable pageable
+    ) {
         return wineService.getAllWines(pageable);
     }
 
