@@ -41,6 +41,12 @@ public class WineController {
     }
 
     @GetMapping("/search")
+    @Operation(summary = "Search wines", description = "Search wines by name")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Search results successfully retrieved",
+            content = @Content(schema = @Schema(implementation = WineCatalogResponseDto.class))
+    )
     public ApiResponseDto<List<WineCatalogResponseDto>> search(
             @RequestParam String query,
             @PageableDefault(page = 0, size = 20)
@@ -80,7 +86,6 @@ public class WineController {
     ) {
         return wineService.getRecommendations(id);
     }
-
 
     @PostMapping("/filter")
     @Operation(
