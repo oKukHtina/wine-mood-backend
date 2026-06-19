@@ -55,6 +55,24 @@ public class WineController {
         return wineService.getWineById(id);
     }
 
+    @GetMapping("/{id}/recommendations")
+    @Operation(summary = "Get recommendations", description = "Returns recommendations by type of wine")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Wine recommendations found",
+            content = @Content(schema = @Schema(implementation = WineCatalogResponseDto.class))
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Recommendations not found"
+    )
+    public List<WineCatalogResponseDto> getRecommendations(
+            @PathVariable Long id
+    ) {
+        return wineService.getRecommendations(id);
+    }
+
+
     @PostMapping("/filter")
     @Operation(
             summary = "Filter wines",
