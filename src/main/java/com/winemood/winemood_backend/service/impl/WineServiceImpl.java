@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -89,8 +90,6 @@ public class WineServiceImpl implements WineService {
             spec = spec.and(WineSpecification.hasMoods(dto.getMoods()));
         }
 
-
-
         if (dto.getEvents() != null && !dto.getEvents().isEmpty()) {
             spec = spec.and(WineSpecification.hasEvents(dto.getEvents()));
         }
@@ -98,8 +97,6 @@ public class WineServiceImpl implements WineService {
         if (dto.getSeasons() != null && !dto.getSeasons().isEmpty()) {
             spec = spec.and(WineSpecification.hasSeasons(dto.getSeasons()));
         }
-
-
 
         if (dto.getFoodName() != null && !dto.getFoodName().isEmpty()) {
             spec = spec.and(WineSpecification.hasFoods(dto.getFoodName()));
@@ -109,6 +106,46 @@ public class WineServiceImpl implements WineService {
 
         List<WineCatalogResponseDto> data =
                 page.map(mapper::toCatalogDto).getContent();
+
+        Meta meta = new Meta(
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.getNumber(),
+                page.getSize()
+        );
+
+        return new ApiResponseDto<>(data, meta);
+    }
+
+    @Override
+    public ApiResponseDto<List<WineCatalogResponseDto>> searchWines(String query, Pageable pageable) {
+
+        if (query == null || query.trim().isEmpty()) {
+            return new ApiResponseDto<>(
+                    List.of(),
+                    new Meta(0, 0, pageable.getPageNumber(), pageable.getPageSize())
+            );
+        }
+
+        String q = query.trim();
+
+        Optional<Wine> exact = repository.findByNameIgnoreCase(q);
+
+        if (exact.isPresent()) {
+            Wine wine = exact.get();
+
+            return new ApiResponseDto<>(
+                    List.of(mapper.toCatalogDto(wine)),
+                    new Meta(1, 1, 0, 1)
+            );
+        }
+
+        Page<Wine> page = repository.searchByName(q, pageable);
+
+        List<WineCatalogResponseDto> data = page.getContent()
+                .stream()
+                .map(mapper::toCatalogDto)
+                .toList();
 
         Meta meta = new Meta(
                 page.getTotalElements(),
