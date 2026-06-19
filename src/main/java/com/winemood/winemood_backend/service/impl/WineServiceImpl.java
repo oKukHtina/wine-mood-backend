@@ -13,9 +13,11 @@ import com.winemood.winemood_backend.service.WineService;
 import com.winemood.winemood_backend.specification.WineSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -34,9 +36,21 @@ public class WineServiceImpl implements WineService {
 
     @Override
     public WineResponseDto getWineById(Long id) {
-       return repository.findById(id)
-               .map(mapper::toDto)
-               .orElseThrow(() -> new WineNotFoundException(id));
+        return mapper.toDto(getWineEntityById(id));
+    }
+
+    @Override
+    public List<WineCatalogResponseDto> getRecommendations(Long wineId) {
+        Wine currentWine = getWineEntityById(wineId);
+
+        return repository.findRecommendations(
+                currentWine.getCategory(),
+                wineId,
+                PageRequest.of(0,4)
+                )
+                .stream()
+                .map(mapper::toCatalogDto)
+                .toList();
     }
 
     @Override
@@ -104,5 +118,10 @@ public class WineServiceImpl implements WineService {
         );
 
         return new ApiResponseDto<>(data, meta);
+    }
+
+    private Wine getWineEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new WineNotFoundException(id));
     }
 }

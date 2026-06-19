@@ -13,6 +13,8 @@ public interface WineService {
 
     WineResponseDto getWineById(Long id);
 
+    List<WineCatalogResponseDto> getRecommendations(Long wineId);
+
     ApiResponseDto<List<WineCatalogResponseDto>> filterWines(
             WineFilterRequestDto filterRequest,
             Pageable pageable
