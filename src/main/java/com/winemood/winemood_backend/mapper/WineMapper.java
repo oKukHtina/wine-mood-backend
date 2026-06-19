@@ -38,10 +38,5 @@ public interface WineMapper {
     @Mapping(source = "category.type", target = "type")
     @Mapping(source = "tasteProfile.sweetnessLevel", target = "sweetnessLevel")
 
-//    @Mapping(source = "tasteProfile.grapeVariety.name", target = "grapeVariety")
-//    @Mapping(source = "tasteProfile.wineStyle.name", target = "wineStyle")
-//    @Mapping(source = "tasteProfile.acidity.name", target = "acidityLevel")
-//    @Mapping(source = "tasteProfile.aromaNotes", target = "aromaNotes")
-//    @Mapping(source = "foodPairings", target = "foodNames")
     WineCatalogResponseDto toCatalogDto(Wine wine);
 }

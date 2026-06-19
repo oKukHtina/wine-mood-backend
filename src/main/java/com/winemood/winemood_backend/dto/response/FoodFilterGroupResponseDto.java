@@ -12,10 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoodFilterGroupResponseDto {
-
-    private Long id;
-
     private String category;
-
-    private List<FoodResponseDto> foods;
+    private List<FoodFilterOptionResponseDto> foods;
 }

@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WineStyleResponseDto {
+public class FilterWineTypeOptionsResponseDto {
     private String name;
 }

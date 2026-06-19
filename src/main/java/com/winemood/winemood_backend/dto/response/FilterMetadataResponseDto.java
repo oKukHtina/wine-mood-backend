@@ -14,4 +14,5 @@ public class FilterMetadataResponseDto {
     private FilterKey filterKey;
     private String title;
     private String iconUrl;
+    private Object options;
 }
