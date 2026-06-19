@@ -40,7 +40,16 @@ public class WineController {
         return wineService.getAllWines(pageable);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/search")
+    public ApiResponseDto<List<WineCatalogResponseDto>> search(
+            @RequestParam String query,
+            @PageableDefault(page = 0, size = 20)
+            @ParameterObject Pageable pageable
+    ){
+        return wineService.searchWines(query, pageable);
+    }
+
+    @GetMapping("/{id:\\d+}")
     @Operation(summary = "Get wine by Id", description = "Returns wine by its ID")
     @ApiResponse(
             responseCode = "200",
@@ -55,7 +64,7 @@ public class WineController {
         return wineService.getWineById(id);
     }
 
-    @GetMapping("/{id}/recommendations")
+    @GetMapping("/{id:\\d+}/recommendations")
     @Operation(summary = "Get recommendations", description = "Returns recommendations by type of wine")
     @ApiResponse(
             responseCode = "200",

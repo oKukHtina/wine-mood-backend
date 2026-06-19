@@ -2,6 +2,7 @@ package com.winemood.winemood_backend.repository;
 
 import com.winemood.winemood_backend.entity.Category;
 import com.winemood.winemood_backend.entity.Wine;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WineRepository extends JpaRepository<Wine, Long>,
         JpaSpecificationExecutor<Wine>,
@@ -26,4 +28,13 @@ public interface WineRepository extends JpaRepository<Wine, Long>,
             @Param("wineId") Long wineId,
             Pageable pageable
     );
+
+    Optional<Wine> findByNameIgnoreCase(String name);
+
+    @Query("""
+       select w
+       from Wine w
+       where lower(w.name) like lower(concat('%', :query, '%'))
+       """)
+    Page<Wine> searchByName(String query, Pageable pageable);
 }
