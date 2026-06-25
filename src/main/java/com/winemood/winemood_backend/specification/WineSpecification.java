@@ -22,7 +22,7 @@ public class WineSpecification {
         };
     }
 
-    public static Specification<Wine> hasSweetnessLevels(Set<String> names){///////
+    public static Specification<Wine> hasSweetnessLevels(Set<String> names){
         return (root, query, cb) -> {
 
             if (names == null || names.isEmpty()) {
@@ -50,7 +50,7 @@ public class WineSpecification {
         };
     }
 
-    public static Specification<Wine> hasGrapeVarieties(Set<String> names) {//////////
+    public static Specification<Wine> hasGrapeVarieties(Set<String> names) {
         return (root, query, cb) -> {
 
             if (names == null || names.isEmpty()) {
@@ -78,7 +78,7 @@ public class WineSpecification {
         };
     }
 
-    public static Specification<Wine> hasAcidityLevels(Set<String> names) {///////
+    public static Specification<Wine> hasAcidityLevels(Set<String> names) {
         return (root, query, cb) -> {
 
             if (names == null || names.isEmpty()) {
@@ -92,7 +92,7 @@ public class WineSpecification {
         };
     }
 
-    public static Specification<Wine> hasAromaNotes(Set<String> names) {/////////
+    public static Specification<Wine> hasAromaNotes(Set<String> names) {
         return (root, query, cb) -> {
 
             if (names == null || names.isEmpty()) {

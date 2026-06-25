@@ -86,4 +86,10 @@ public class Wine {
 
     @OneToOne(mappedBy = "wine", cascade = CascadeType.ALL)
     private WineTasteProfile tasteProfile;
+
+    @ManyToOne
+    private PriceLevel priceLevel;
+
+    @ManyToOne
+    private AgingPotential agingPotential;
 }
