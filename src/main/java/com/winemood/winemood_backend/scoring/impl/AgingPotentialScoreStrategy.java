@@ -17,6 +17,6 @@ public class AgingPotentialScoreStrategy implements ScoreStrategy {
         return wine
                 .getAgingPotential()
                 .getName()
-                .equals(answer) ? 4 : 2;
+                .equals(answer) ? 4 : 0;
     }
 }

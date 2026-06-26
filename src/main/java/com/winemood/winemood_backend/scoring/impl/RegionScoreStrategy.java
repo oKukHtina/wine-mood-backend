@@ -17,6 +17,6 @@ public class RegionScoreStrategy implements ScoreStrategy {
         return wine
                 .getProducer()
                 .getRegion()
-                .equals(answer) ? 5 : 2;
+                .equals(answer) ? 5 : 0;
     }
 }

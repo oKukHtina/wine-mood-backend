@@ -18,6 +18,6 @@ public class SweetnessLevelScoreStrategy implements ScoreStrategy {
                 .getTasteProfile()
                 .getSweetnessLevel()
                 .getName()
-                .equals(answer) ? 8 : 2;
+                .equals(answer) ? 8 : 0;
     }
 }

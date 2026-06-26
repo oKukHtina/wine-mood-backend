@@ -18,6 +18,6 @@ public class GrapeVarietyScoreStrategy implements ScoreStrategy {
                 .getTasteProfile()
                 .getGrapeVariety()
                 .getName()
-                .equals(answer)? 6 : 3;
+                .equals(answer)? 6 : 0;
     }
 }
