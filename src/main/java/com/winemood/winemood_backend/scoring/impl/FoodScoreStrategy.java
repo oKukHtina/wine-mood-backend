@@ -20,6 +20,6 @@ public class FoodScoreStrategy implements ScoreStrategy {
         return wine
                 .getFoodPairings()
                 .stream()
-                .anyMatch(event -> event.getName().equals(answer)) ? 7 : 3;
+                .anyMatch(event -> event.getName().equals(answer)) ? 7 : 0;
     }
 }

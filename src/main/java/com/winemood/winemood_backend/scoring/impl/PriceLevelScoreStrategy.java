@@ -20,6 +20,6 @@ public class PriceLevelScoreStrategy implements ScoreStrategy {
         return wine
                 .getPriceLevel()
                 .getName()
-                .equals(answer) ? 6 : 2;
+                .equals(answer) ? 6 : 0;
     }
 }

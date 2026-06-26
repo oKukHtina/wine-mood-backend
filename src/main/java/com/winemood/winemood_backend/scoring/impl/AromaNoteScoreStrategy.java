@@ -18,6 +18,6 @@ public class AromaNoteScoreStrategy implements ScoreStrategy {
                 .getTasteProfile()
                 .getAromaNotes()
                 .stream()
-                .anyMatch(aroma -> aroma.getName().equals(answer)) ? 6 : 2;
+                .anyMatch(aroma -> aroma.getName().equals(answer)) ? 6 : 0;
     }
 }

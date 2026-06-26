@@ -18,6 +18,6 @@ public class WineStyleScoreStrategy implements ScoreStrategy {
                 .getTasteProfile()
                 .getWineStyle()
                 .getName()
-                .equals(answer) ? 5 : 1;
+                .equals(answer) ? 5 : 0;
     }
 }
