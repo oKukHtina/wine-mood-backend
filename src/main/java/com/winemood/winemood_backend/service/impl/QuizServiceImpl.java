@@ -10,7 +10,7 @@ import com.winemood.winemood_backend.scoring.ScoreStrategy;
 import com.winemood.winemood_backend.scoring.WineScore;
 import com.winemood.winemood_backend.service.QuizService;
 import org.springframework.stereotype.Service;
-
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,12 +42,21 @@ public class QuizServiceImpl implements QuizService {
 
         Map<QuizScoreKey, String> answers = request.getAnswers();
 
-        return repository.findAll().stream()
-                .map(wine -> {
-                    int score = calculateScore(wine, answers);
-                    return new WineScore(wine, score);
-                })
-                .sorted((a, b) -> Integer.compare(b.score(), a.score()))
+        List<WineScore> wineScores = repository.findAll().stream()
+                .map(wine -> new WineScore(wine, calculateScore(wine, answers)))
+                .toList();
+
+        boolean allScoresAreZero = wineScores.stream()
+                .allMatch(ws -> ws.score() == 0);
+
+        if (allScoresAreZero) {
+            return repository.findRandomFour().stream()
+                    .map(mapper::toCatalogDto)
+                    .toList();
+        }
+
+        return wineScores.stream()
+                .sorted(Comparator.comparingInt(WineScore::score).reversed())
                 .limit(4)
                 .map(ws -> mapper.toCatalogDto(ws.wine()))
                 .toList();
