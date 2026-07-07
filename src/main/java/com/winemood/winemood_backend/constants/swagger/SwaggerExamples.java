@@ -34,4 +34,13 @@ public final class SwaggerExamples {
               "path": "/api/auth/registration"
             }
             """;
+    public static final String ERROR_401_INVALID_CREDENTIALS = """
+            {
+              "timestamp": "2026-07-08T01:00:00",
+              "status": 401,
+              "error": "Unauthorized",
+              "message": "Invalid email or password",
+              "path": "/api/auth/login"
+            }
+            """;
 }

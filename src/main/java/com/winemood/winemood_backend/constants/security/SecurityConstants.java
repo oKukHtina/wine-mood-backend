@@ -6,4 +6,6 @@ public final class SecurityConstants {
     }
 
     public static final String TOKEN_TYPE = "Bearer";
+    public static final String INVALID_CREDENTIALS = "Invalid email or password";
+    public static final String EXISTING_USER = "User already exists";
 }

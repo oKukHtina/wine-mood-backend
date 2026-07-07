@@ -1,6 +1,7 @@
 package com.winemood.winemood_backend.controller;
 
 import com.winemood.winemood_backend.constants.swagger.SwaggerExamples;
+import com.winemood.winemood_backend.dto.request.UserLoginRequestDto;
 import com.winemood.winemood_backend.dto.request.UserRegistrationRequestDto;
 import com.winemood.winemood_backend.dto.response.AuthenticationResponseDto;
 import com.winemood.winemood_backend.exceptions.ErrorResponse;
@@ -66,5 +67,48 @@ public class AuthController {
     public AuthenticationResponseDto registerUser(@Valid @RequestBody UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         return userService.register(requestDto);
+    }
+
+    @Operation(
+            summary = "Login user",
+            description = "Authenticates a user and returns a JWT token."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User successfully authenticated",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AuthenticationResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = SwaggerExamples.ERROR_400_VALIDATION
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Invalid email or password",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = SwaggerExamples.ERROR_401_INVALID_CREDENTIALS
+                            )
+                    )
+            )
+    })
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public AuthenticationResponseDto login(@Valid @RequestBody UserLoginRequestDto requestDto) {
+        System.out.println("LOGIN CONTROLLER");
+        return userService.login(requestDto);
     }
 }
