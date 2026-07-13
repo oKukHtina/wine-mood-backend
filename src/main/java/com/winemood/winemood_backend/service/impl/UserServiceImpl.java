@@ -6,6 +6,7 @@ import com.winemood.winemood_backend.dto.request.UserRegistrationRequestDto;
 import com.winemood.winemood_backend.dto.response.AuthenticationResponseDto;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.exceptions.RegistrationException;
+import com.winemood.winemood_backend.mapper.UserMapper;
 import com.winemood.winemood_backend.repository.UserRepository;
 import com.winemood.winemood_backend.security.JwtUtil;
 import com.winemood.winemood_backend.service.UserService;
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final UserMapper userMapper;
 
     @Override
     public AuthenticationResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException {
@@ -36,7 +38,8 @@ public class UserServiceImpl implements UserService {
 
         return new AuthenticationResponseDto(
                 token,
-                SecurityConstants.TOKEN_TYPE
+                SecurityConstants.TOKEN_TYPE,
+                userMapper.toDto(user)
         );
     }
 
@@ -57,6 +60,8 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtil.generateToken(user);
         return new AuthenticationResponseDto(
                 token,
-                SecurityConstants.TOKEN_TYPE);
+                SecurityConstants.TOKEN_TYPE,
+                userMapper.toDto(user)
+        );
     }
 }
