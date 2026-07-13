@@ -108,7 +108,6 @@ public class AuthController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public AuthenticationResponseDto login(@Valid @RequestBody UserLoginRequestDto requestDto) {
-        System.out.println("LOGIN CONTROLLER");
         return userService.login(requestDto);
     }
 }

@@ -23,4 +23,6 @@ public class AuthenticationResponseDto {
             example = "Bearer"
     )
     private String tokenType;
+
+    private UserResponseDto user;
 }
