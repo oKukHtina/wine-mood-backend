@@ -1,6 +1,6 @@
 package com.winemood.winemood_backend.controller;
 
-import com.winemood.winemood_backend.constants.swagger.SwaggerExamples;
+import com.winemood.winemood_backend.constants.swagger.AuthSwaggerExamples;
 import com.winemood.winemood_backend.dto.request.UserLoginRequestDto;
 import com.winemood.winemood_backend.dto.request.UserRegistrationRequestDto;
 import com.winemood.winemood_backend.dto.response.AuthenticationResponseDto;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "User management", description = "Endpoints for managing users")
+@Tag(name = "Authentication", description = "Authentication endpoints")
 public class AuthController {
     private final UserService userService;
 
@@ -46,7 +46,7 @@ public class AuthController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
-                                    value = SwaggerExamples.ERROR_400_VALIDATION
+                                    value = AuthSwaggerExamples.ERROR_400_VALIDATION
                             )
                     )
             ),
@@ -57,7 +57,7 @@ public class AuthController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
-                                    value = SwaggerExamples.ERROR_409_USER_ALREADY_EXISTS
+                                    value = AuthSwaggerExamples.ERROR_409_USER_ALREADY_EXISTS
                             )
                     )
             )
@@ -89,7 +89,7 @@ public class AuthController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
-                                    value = SwaggerExamples.ERROR_400_VALIDATION
+                                    value = AuthSwaggerExamples.ERROR_400_VALIDATION
                             )
                     )
             ),
@@ -100,7 +100,7 @@ public class AuthController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
-                                    value = SwaggerExamples.ERROR_401_INVALID_CREDENTIALS
+                                    value = AuthSwaggerExamples.ERROR_401_INVALID_CREDENTIALS
                             )
                     )
             )

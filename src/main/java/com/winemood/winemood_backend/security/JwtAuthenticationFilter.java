@@ -1,6 +1,6 @@
 package com.winemood.winemood_backend.security;
 
-import com.winemood.winemood_backend.constants.security.SecurityConstants;
+import com.winemood.winemood_backend.constants.SecurityConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

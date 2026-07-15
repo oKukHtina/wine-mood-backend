@@ -1,10 +1,6 @@
 package com.winemood.winemood_backend.constants.swagger;
 
-public final class SwaggerExamples {
-
-    private SwaggerExamples() {
-    }
-
+public final class AuthSwaggerExamples {
     public static final String ERROR_400_VALIDATION = """
             {
               "timestamp": "2026-07-07T15:30:00",
@@ -43,4 +39,7 @@ public final class SwaggerExamples {
               "path": "/api/auth/login"
             }
             """;
+
+    private AuthSwaggerExamples() {
+    }
 }

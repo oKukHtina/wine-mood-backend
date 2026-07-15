@@ -1,5 +1,6 @@
 package com.winemood.winemood_backend.security;
 
+import com.winemood.winemood_backend.constants.ExceptionMessageConstant;
 import com.winemood.winemood_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         return userRepository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException("Can't find user by email")
+                () -> new UsernameNotFoundException(ExceptionMessageConstant.USER_BY_EMAIL_NOT_FOUND)
         );
     }
 }
