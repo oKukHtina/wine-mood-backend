@@ -28,6 +28,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
+    @Column(name = "avatar_public_id")
+    private String avatarPublicId;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

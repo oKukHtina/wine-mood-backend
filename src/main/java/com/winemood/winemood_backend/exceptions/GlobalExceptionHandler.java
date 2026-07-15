@@ -62,6 +62,38 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ErrorResponse> handleFileUploadException(
+            FileUploadException ex,
+            WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                ex.getMessage(),
+                extractPath(request)
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(
+            UserNotFoundException ex,
+            WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage(),
+                extractPath(request)
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
