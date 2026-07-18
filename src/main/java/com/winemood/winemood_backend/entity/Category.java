@@ -23,6 +23,10 @@ public class Category {
     private CategoryType type;
 
     @NotBlank
-    @Column(nullable = false)
-    private String image;
+    @Column(name = "home_image", nullable = false)
+    private String homeImage;
+
+    @NotBlank
+    @Column(name = "profile_image", nullable = false)
+    private String profileImage;
 }

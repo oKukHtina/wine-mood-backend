@@ -14,5 +14,6 @@ public class CategoryUiResponseDto {
     private Long id;
     private String title;
     private CategoryType type;
-    private String image;
+    private String homeImage;
+    private String profileImage;
 }
