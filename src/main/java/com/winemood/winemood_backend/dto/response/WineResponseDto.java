@@ -15,6 +15,7 @@ import java.util.Set;
 public class WineResponseDto {
     private Long id;
     private String name;
+    private boolean favorite;
     private CategoryType type;
     private Integer volumeMl;
     private String description;

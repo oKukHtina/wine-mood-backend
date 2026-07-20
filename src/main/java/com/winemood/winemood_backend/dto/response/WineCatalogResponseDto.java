@@ -19,4 +19,6 @@ public class WineCatalogResponseDto {
     private String countryName;
     private String imageUrl;
     private Double rating;
+
+    private boolean favorite;
 }
