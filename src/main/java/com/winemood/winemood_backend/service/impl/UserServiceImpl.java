@@ -26,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @Service
@@ -37,28 +36,22 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
     private final UserMapper userMapper;
     private final CloudinaryService cloudinaryService;
-
     private final WineRepository wineRepository;
     private final WineMapper wineMapper;
 
     @Override
-    public AuthenticationResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException {
+    public RegistrationResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException {
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new RegistrationException(ExceptionMessageConstant.EXISTING_USER);
         }
+
         User user = new User();
         user.setEmail(requestDto.getEmail());
         user.setName(requestDto.getName());
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
 
         User savedUser = userRepository.save(user);
-        String token = jwtUtil.generateToken(savedUser);
-
-        return new AuthenticationResponseDto(
-                token,
-                SecurityConstants.TOKEN_TYPE,
-                userMapper.toDto(savedUser)
-        );
+        return userMapper.toRegisterDto(savedUser);
     }
 
     @Override
@@ -78,8 +71,7 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtil.generateToken(user);
         return new AuthenticationResponseDto(
                 token,
-                SecurityConstants.TOKEN_TYPE,
-                userMapper.toDto(user)
+                SecurityConstants.TOKEN_TYPE
         );
     }
 
@@ -145,6 +137,12 @@ public class UserServiceImpl implements UserService {
                 .toList();
 
         return new FavoriteWineResponseDto(wines.size(), wines);
+    }
+
+    @Override
+    public UserResponseDto getCurrentUser() {
+        User authenticatedUser = getAuthenticatedUser();
+        return userMapper.toDto(authenticatedUser);
     }
 
     private User getAuthenticatedUser() {

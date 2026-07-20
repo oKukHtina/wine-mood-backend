@@ -30,20 +30,17 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(
                                 HttpMethod.OPTIONS,
                                 "/**"
                         ).permitAll()
 
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/api/wines/**",
-                                "/api/quiz/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/users/**")
+                        .authenticated()
+
+                        .anyRequest()
+                        .permitAll()
                 )
                 .addFilterBefore(
                         jwtAuthenticationFilter,
