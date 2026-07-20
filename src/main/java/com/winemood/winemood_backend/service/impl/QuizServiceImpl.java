@@ -8,27 +8,29 @@ import com.winemood.winemood_backend.mapper.WineMapper;
 import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.scoring.ScoreStrategy;
 import com.winemood.winemood_backend.scoring.WineScore;
+import com.winemood.winemood_backend.service.FavoriteService;
 import com.winemood.winemood_backend.service.QuizService;
 import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class QuizServiceImpl implements QuizService {
-
     private final WineRepository repository;
+    private final FavoriteService favoriteService;
     private final Map<QuizScoreKey, ScoreStrategy> strategies;
-    private final WineMapper mapper;
 
     public QuizServiceImpl(
             WineRepository repository,
+            FavoriteService favoriteService,
             List<ScoreStrategy> strategyList,
             WineMapper mapper
     ) {
         this.repository = repository;
-        this.mapper = mapper;
+        this.favoriteService = favoriteService;
 
         this.strategies = strategyList.stream()
                 .collect(Collectors.toMap(
@@ -39,7 +41,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public List<WineCatalogResponseDto> calculateResult(QuizRequestDto request) {
-
+        Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
         Map<QuizScoreKey, String> answers = request.getAnswers();
 
         List<WineScore> wineScores = repository.findAll().stream()
@@ -51,14 +53,20 @@ public class QuizServiceImpl implements QuizService {
 
         if (allScoresAreZero) {
             return repository.findRandomFour().stream()
-                    .map(mapper::toCatalogDto)
+                    .map(wine -> favoriteService.toCatalogDto(
+                            wine,
+                            favoriteWineIds
+                    ))
                     .toList();
         }
 
         return wineScores.stream()
                 .sorted(Comparator.comparingInt(WineScore::score).reversed())
                 .limit(4)
-                .map(ws -> mapper.toCatalogDto(ws.wine()))
+                .map(ws -> favoriteService.toCatalogDto(
+                        ws.wine(),
+                        favoriteWineIds
+                ))
                 .toList();
     }
 

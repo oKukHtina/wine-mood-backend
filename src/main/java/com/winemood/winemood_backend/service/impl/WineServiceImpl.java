@@ -7,8 +7,8 @@ import com.winemood.winemood_backend.dto.response.WineCatalogResponseDto;
 import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import com.winemood.winemood_backend.entity.Wine;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
-import com.winemood.winemood_backend.mapper.WineMapper;
 import com.winemood.winemood_backend.repository.WineRepository;
+import com.winemood.winemood_backend.service.FavoriteService;
 import com.winemood.winemood_backend.service.WineService;
 import com.winemood.winemood_backend.specification.WineSpecification;
 import lombok.RequiredArgsConstructor;
@@ -17,45 +17,64 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class WineServiceImpl implements WineService {
-    private final WineRepository repository;
-    private final WineMapper mapper;
+    private final WineRepository wineRepository;
+    private final FavoriteService favoriteService;
 
     @Override
     public List<WineCatalogResponseDto> getAllWines(Pageable pageable) {
-        return repository.findAll(pageable)
+        Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
+
+        return wineRepository.findAll(pageable)
                 .stream()
-                .map(mapper::toCatalogDto)
+                .map(
+                        wine -> favoriteService.toCatalogDto(
+                                wine,
+                                favoriteWineIds
+                        )
+                )
                 .toList();
     }
 
     @Override
     public WineResponseDto getWineById(Long id) {
-        return mapper.toDto(getWineEntityById(id));
+        Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
+
+        return favoriteService.toDto(
+                getWineEntityById(id),
+                favoriteWineIds
+        );
     }
 
     @Override
     public List<WineCatalogResponseDto> getRecommendations(Long wineId) {
+        Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
         Wine currentWine = getWineEntityById(wineId);
 
-        return repository.findRecommendations(
-                currentWine.getCategory(),
-                wineId,
-                PageRequest.of(0,4)
+        return wineRepository.findRecommendations(
+                        currentWine.getCategory(),
+                        wineId,
+                        PageRequest.of(0, 4)
                 )
                 .stream()
-                .map(mapper::toCatalogDto)
+                .map(
+                        wine -> favoriteService.toCatalogDto(
+                                wine,
+                                favoriteWineIds
+                        )
+                )
                 .toList();
     }
 
     @Override
     public ApiResponseDto<List<WineCatalogResponseDto>> filterWines(WineFilterRequestDto dto, Pageable pageable) {
+        Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
         Specification<Wine> spec = Specification.unrestricted();
 
         if (dto.getWineTypes() != null && !dto.getWineTypes().isEmpty()) {
@@ -102,10 +121,17 @@ public class WineServiceImpl implements WineService {
             spec = spec.and(WineSpecification.hasFoods(dto.getFoodName()));
         }
 
-        Page<Wine> page = repository.findAll(spec, pageable);
+        Page<Wine> page = wineRepository.findAll(spec, pageable);
 
-        List<WineCatalogResponseDto> data =
-                page.map(mapper::toCatalogDto).getContent();
+        List<WineCatalogResponseDto> data = page.getContent()
+                .stream()
+                .map(
+                        wine -> favoriteService.toCatalogDto(
+                                wine,
+                                favoriteWineIds
+                        )
+                )
+                .toList();
 
         Meta meta = new Meta(
                 page.getTotalElements(),
@@ -119,32 +145,48 @@ public class WineServiceImpl implements WineService {
 
     @Override
     public ApiResponseDto<List<WineCatalogResponseDto>> searchWines(String query, Pageable pageable) {
+        Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
 
         if (query == null || query.trim().isEmpty()) {
             return new ApiResponseDto<>(
                     List.of(),
-                    new Meta(0, 0, pageable.getPageNumber(), pageable.getPageSize())
+                    new Meta(
+                            0,
+                            0,
+                            pageable.getPageNumber(),
+                            pageable.getPageSize()
+                    )
             );
         }
 
         String q = query.trim();
 
-        Optional<Wine> exact = repository.findByNameIgnoreCase(q);
+        Optional<Wine> exact = wineRepository.findByNameIgnoreCase(q);
 
         if (exact.isPresent()) {
             Wine wine = exact.get();
 
             return new ApiResponseDto<>(
-                    List.of(mapper.toCatalogDto(wine)),
+                    List.of(
+                            favoriteService.toCatalogDto(
+                                    wine,
+                                    favoriteWineIds
+                            )
+                    ),
                     new Meta(1, 1, 0, 1)
             );
         }
 
-        Page<Wine> page = repository.searchByName(q, pageable);
+        Page<Wine> page = wineRepository.searchByName(q, pageable);
 
         List<WineCatalogResponseDto> data = page.getContent()
                 .stream()
-                .map(mapper::toCatalogDto)
+                .map(
+                        wine -> favoriteService.toCatalogDto(
+                                wine,
+                                favoriteWineIds
+                        )
+                )
                 .toList();
 
         Meta meta = new Meta(
@@ -158,7 +200,7 @@ public class WineServiceImpl implements WineService {
     }
 
     private Wine getWineEntityById(Long id) {
-        return repository.findById(id)
+        return wineRepository.findById(id)
                 .orElseThrow(() -> new WineNotFoundException(id));
     }
 }

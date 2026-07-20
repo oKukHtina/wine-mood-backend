@@ -32,11 +32,12 @@ public interface WineMapper {
     @Mapping(source = "tasteProfile.wineStyle", target = "wineStyle")
 
     @Mapping(source = "foodPairings", target = "foodPairings")
+    @Mapping(target = "favorite", ignore = true)
     WineResponseDto toDto(Wine wine);
 
     @Mapping(source = "producer.country.name", target = "countryName")
     @Mapping(source = "category.type", target = "type")
     @Mapping(source = "tasteProfile.sweetnessLevel", target = "sweetnessLevel")
-
+    @Mapping(target = "favorite", ignore = true)
     WineCatalogResponseDto toCatalogDto(Wine wine);
 }

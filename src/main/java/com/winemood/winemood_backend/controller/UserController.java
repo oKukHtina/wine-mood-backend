@@ -1,6 +1,7 @@
 package com.winemood.winemood_backend.controller;
 
 import com.winemood.winemood_backend.constants.swagger.UserSwaggerExamples;
+import com.winemood.winemood_backend.dto.response.FavoriteWineResponseDto;
 import com.winemood.winemood_backend.dto.response.UserResponseDto;
 import com.winemood.winemood_backend.exceptions.ErrorResponse;
 import com.winemood.winemood_backend.service.UserService;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -134,5 +136,22 @@ public class UserController {
     @DeleteMapping("/avatar")
     public UserResponseDto deleteAvatar() {
         return userService.deleteAvatar();
+    }
+
+    @PostMapping("/favorites/{wineId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addFavorite(@PathVariable Long wineId) {
+        userService.addFavorite(wineId);
+    }
+
+    @DeleteMapping("/favorites/{wineId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFavorite(@PathVariable Long wineId) {
+        userService.removeFavorite(wineId);
+    }
+
+    @GetMapping("/favorites")
+    public FavoriteWineResponseDto getFavoriteWines() {
+        return userService.getFavoriteWines();
     }
 }
