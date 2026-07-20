@@ -4,6 +4,7 @@ import com.winemood.winemood_backend.constants.swagger.AuthSwaggerExamples;
 import com.winemood.winemood_backend.dto.request.UserLoginRequestDto;
 import com.winemood.winemood_backend.dto.request.UserRegistrationRequestDto;
 import com.winemood.winemood_backend.dto.response.AuthenticationResponseDto;
+import com.winemood.winemood_backend.dto.response.RegistrationResponseDto;
 import com.winemood.winemood_backend.exceptions.ErrorResponse;
 import com.winemood.winemood_backend.exceptions.RegistrationException;
 import com.winemood.winemood_backend.service.UserService;
@@ -64,7 +65,7 @@ public class AuthController {
     })
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthenticationResponseDto registerUser(@Valid @RequestBody UserRegistrationRequestDto requestDto)
+    public RegistrationResponseDto registerUser(@Valid @RequestBody UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         return userService.register(requestDto);
     }

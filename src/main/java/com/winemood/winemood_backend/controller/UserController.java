@@ -138,20 +138,133 @@ public class UserController {
         return userService.deleteAvatar();
     }
 
+    @Operation(
+            summary = "Add wine to favorites",
+            description = "Adds a wine to the authenticated user's favorites."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Wine added to favorites successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Authentication required",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = UserSwaggerExamples.ERROR_403_ACCESS_DENIED
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Wine not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
     @PostMapping("/favorites/{wineId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addFavorite(@PathVariable Long wineId) {
         userService.addFavorite(wineId);
     }
 
+    @Operation(
+            summary = "Remove wine from favorites",
+            description = "Removes a wine from the authenticated user's favorites."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Wine removed from favorites successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Authentication required",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = UserSwaggerExamples.ERROR_403_ACCESS_DENIED
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Wine not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
     @DeleteMapping("/favorites/{wineId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeFavorite(@PathVariable Long wineId) {
         userService.removeFavorite(wineId);
     }
 
+    @Operation(
+            summary = "Get favorite wines",
+            description = "Returns all wines added to favorites by the authenticated user."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Favorite wines returned successfully",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = FavoriteWineResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Authentication required",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = UserSwaggerExamples.ERROR_403_ACCESS_DENIED
+                            )
+                    )
+            )
+    })
     @GetMapping("/favorites")
     public FavoriteWineResponseDto getFavoriteWines() {
         return userService.getFavoriteWines();
+    }
+
+    @Operation(
+            summary = "Get current user",
+            description = "Returns the profile of the authenticated user."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User profile returned successfully",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Authentication required",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = UserSwaggerExamples.ERROR_403_ACCESS_DENIED
+                            )
+                    )
+            )
+    })
+    @GetMapping("/me")
+    public UserResponseDto currentUser() {
+        return userService.getCurrentUser();
     }
 }
