@@ -7,14 +7,12 @@ import com.winemood.winemood_backend.repository.FilterMetadataRepository;
 import com.winemood.winemood_backend.service.FilterMetadataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FilterMetadataServiceImpl implements FilterMetadataService {
     private final List<FilterOptionProvider> providers;
-
     private final FilterMetadataRepository repository;
     private final FilterMetadataMapper mapper;
 
