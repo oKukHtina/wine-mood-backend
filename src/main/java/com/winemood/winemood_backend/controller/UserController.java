@@ -1,9 +1,12 @@
 package com.winemood.winemood_backend.controller;
 
 import com.winemood.winemood_backend.constants.swagger.UserSwaggerExamples;
+import com.winemood.winemood_backend.dto.request.SaveQuizResultRequestDto;
 import com.winemood.winemood_backend.dto.response.FavoriteWineResponseDto;
+import com.winemood.winemood_backend.dto.response.QuizResultResponseDto;
 import com.winemood.winemood_backend.dto.response.UserResponseDto;
 import com.winemood.winemood_backend.exceptions.ErrorResponse;
+import com.winemood.winemood_backend.service.QuizResultService;
 import com.winemood.winemood_backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+    private final QuizResultService quizResultService;
 
     @Operation(
             summary = "Upload user avatar",
@@ -266,5 +271,77 @@ public class UserController {
     @GetMapping("/me")
     public UserResponseDto currentUser() {
         return userService.getCurrentUser();
+    }
+
+    @Operation(
+            summary = "Get quiz history",
+            description = "Returns all quiz results of the authenticated user ordered from newest to oldest."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Quiz history returned successfully",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = QuizResultResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Authentication required",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = UserSwaggerExamples.ERROR_403_ACCESS_DENIED
+                            )
+                    )
+            )
+    })
+    @GetMapping("/quiz-history")
+    public List<QuizResultResponseDto> getQuizHistory() {
+        return quizResultService.getQuizHistory();
+    }
+
+    @Operation(
+            summary = "Save quiz result",
+            description = "Saves the latest quiz result for the authenticated user. "
+                    + "If the user is not authenticated, the request is ignored."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Quiz result saved successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request body",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Authentication required",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = UserSwaggerExamples.ERROR_403_ACCESS_DENIED
+                            )
+                    )
+            )
+    })
+    @PostMapping("/quiz-history")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void saveQuizHistory(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Quiz result to save",
+                    required = true
+            )
+            @RequestBody SaveQuizResultRequestDto request
+    ) {
+        quizResultService.saveQuizResult(request.wineIds());
     }
 }

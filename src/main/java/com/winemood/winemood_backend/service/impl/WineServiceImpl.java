@@ -34,7 +34,7 @@ public class WineServiceImpl implements WineService {
         return wineRepository.findAll(pageable)
                 .stream()
                 .map(
-                        wine -> favoriteService.toCatalogDto(
+                        wine -> favoriteService.toCatalogDtoWithFavorite(
                                 wine,
                                 favoriteWineIds
                         )
@@ -46,7 +46,7 @@ public class WineServiceImpl implements WineService {
     public WineResponseDto getWineById(Long id) {
         Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
 
-        return favoriteService.toDto(
+        return favoriteService.toDtoWithFavorite(
                 getWineEntityById(id),
                 favoriteWineIds
         );
@@ -64,7 +64,7 @@ public class WineServiceImpl implements WineService {
                 )
                 .stream()
                 .map(
-                        wine -> favoriteService.toCatalogDto(
+                        wine -> favoriteService.toCatalogDtoWithFavorite(
                                 wine,
                                 favoriteWineIds
                         )
@@ -126,7 +126,7 @@ public class WineServiceImpl implements WineService {
         List<WineCatalogResponseDto> data = page.getContent()
                 .stream()
                 .map(
-                        wine -> favoriteService.toCatalogDto(
+                        wine -> favoriteService.toCatalogDtoWithFavorite(
                                 wine,
                                 favoriteWineIds
                         )
@@ -168,7 +168,7 @@ public class WineServiceImpl implements WineService {
 
             return new ApiResponseDto<>(
                     List.of(
-                            favoriteService.toCatalogDto(
+                            favoriteService.toCatalogDtoWithFavorite(
                                     wine,
                                     favoriteWineIds
                             )
@@ -182,7 +182,7 @@ public class WineServiceImpl implements WineService {
         List<WineCatalogResponseDto> data = page.getContent()
                 .stream()
                 .map(
-                        wine -> favoriteService.toCatalogDto(
+                        wine -> favoriteService.toCatalogDtoWithFavorite(
                                 wine,
                                 favoriteWineIds
                         )

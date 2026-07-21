@@ -8,20 +8,18 @@ import com.winemood.winemood_backend.dto.response.*;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
 import com.winemood.winemood_backend.exceptions.RegistrationException;
-import com.winemood.winemood_backend.exceptions.UserNotFoundException;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.UserMapper;
 import com.winemood.winemood_backend.mapper.WineMapper;
 import com.winemood.winemood_backend.repository.UserRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.security.JwtUtil;
+import com.winemood.winemood_backend.service.AuthenticatedUserService;
 import com.winemood.winemood_backend.service.CloudinaryService;
+import com.winemood.winemood_backend.service.QuizResultService;
 import com.winemood.winemood_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -32,12 +30,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final WineRepository wineRepository;
+    private final CloudinaryService cloudinaryService;
+    private final AuthenticatedUserService authenticatedUserService;
+    private final QuizResultService quizResultService;
+    private final UserMapper userMapper;
+    private final WineMapper wineMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final UserMapper userMapper;
-    private final CloudinaryService cloudinaryService;
-    private final WineRepository wineRepository;
-    private final WineMapper wineMapper;
 
     @Override
     public RegistrationResponseDto register(UserRegistrationRequestDto requestDto) throws RegistrationException {
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto uploadAvatar(MultipartFile image) {
-        User authenticatedUser = getAuthenticatedUser();
+        User authenticatedUser = authenticatedUserService.getCurrentUser();
 
         if (StringUtils.hasText(authenticatedUser.getAvatarPublicId())) {
             cloudinaryService.delete(authenticatedUser.getAvatarPublicId());
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto deleteAvatar() {
-        User authenticatedUser = getAuthenticatedUser();
+        User authenticatedUser = authenticatedUserService.getCurrentUser();
 
         if (StringUtils.hasText(authenticatedUser.getAvatarPublicId())) {
             cloudinaryService.delete(authenticatedUser.getAvatarPublicId());
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addFavorite(Long wineId) {
-        User authenticatedUser = getAuthenticatedUser();
+        User authenticatedUser = authenticatedUserService.getCurrentUser();
 
         authenticatedUser.getFavoriteWines().add(getWine(wineId));
         userRepository.save(authenticatedUser);
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeFavorite(Long wineId) {
-        User authenticatedUser = getAuthenticatedUser();
+        User authenticatedUser = authenticatedUserService.getCurrentUser();
 
         authenticatedUser.getFavoriteWines().remove(getWine(wineId));
         userRepository.save(authenticatedUser);
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public FavoriteWineResponseDto getFavoriteWines() {
-        User authenticatedUser = getAuthenticatedUser();
+        User authenticatedUser = authenticatedUserService.getCurrentUser();
 
         List<WineCatalogResponseDto> wines = authenticatedUser.getFavoriteWines()
                 .stream()
@@ -141,28 +141,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getCurrentUser() {
-        User authenticatedUser = getAuthenticatedUser();
+        User authenticatedUser = authenticatedUserService.getCurrentUser();
         return userMapper.toDto(authenticatedUser);
-    }
-
-    private User getAuthenticatedUser() {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null
-                || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
-            throw new UserNotFoundException(
-                    ExceptionMessageConstant.USER_NOT_FOUND
-            );
-        }
-
-        return userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(
-                        () -> new UserNotFoundException(
-                                ExceptionMessageConstant.USER_NOT_FOUND
-                        )
-                );
     }
 
     private Wine getWine(Long wineId) {
