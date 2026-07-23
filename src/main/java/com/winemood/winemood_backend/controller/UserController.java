@@ -5,8 +5,10 @@ import com.winemood.winemood_backend.dto.request.SaveQuizResultRequestDto;
 import com.winemood.winemood_backend.dto.response.FavoriteWineResponseDto;
 import com.winemood.winemood_backend.dto.response.QuizResultResponseDto;
 import com.winemood.winemood_backend.dto.response.UserResponseDto;
+import com.winemood.winemood_backend.dto.response.UserReviewResponseDto;
 import com.winemood.winemood_backend.exceptions.ErrorResponse;
 import com.winemood.winemood_backend.service.QuizResultService;
+import com.winemood.winemood_backend.service.ReviewService;
 import com.winemood.winemood_backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,6 +36,7 @@ public class UserController {
 
     private final UserService userService;
     private final QuizResultService quizResultService;
+    private final ReviewService reviewService;
 
     @Operation(
             summary = "Upload user avatar",
@@ -343,5 +347,33 @@ public class UserController {
             @RequestBody SaveQuizResultRequestDto request
     ) {
         quizResultService.saveQuizResult(request.wineIds());
+    }
+
+    @Operation(
+            summary = "Get current user reviews",
+            description = "Returns all reviews created by the authenticated user ordered from newest to oldest."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User reviews returned successfully",
+                    content = @Content(
+                            schema = @Schema(implementation = UserReviewResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Authentication required",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(
+                                    value = UserSwaggerExamples.ERROR_403_ACCESS_DENIED
+                            )
+                    )
+            )
+    })
+    @GetMapping("/reviews")
+    public List<UserReviewResponseDto> getCurrentUserReviews() {
+        return reviewService.getCurrentUserReviews();
     }
 }

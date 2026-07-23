@@ -49,8 +49,8 @@ public class Wine {
     private Integer vintage;
 
 
-    @Column(nullable = false)
-    private Double rating = 0.0;
+    @Column(nullable = false, precision = 4, scale = 2)
+    private BigDecimal rating = BigDecimal.ZERO;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
