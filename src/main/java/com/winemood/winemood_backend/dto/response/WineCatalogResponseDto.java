@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -56,9 +58,9 @@ public class WineCatalogResponseDto {
 
     @Schema(
             description = "Average user rating",
-            example = "4.8"
+            example = "4.83"
     )
-    private Double rating;
+    private BigDecimal rating;
 
     @Schema(
             description = "Whether the wine is in the authenticated user's favorites",

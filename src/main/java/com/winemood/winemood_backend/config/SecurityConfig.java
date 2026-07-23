@@ -36,6 +36,9 @@ public class SecurityConfig {
                                 "/**"
                         ).permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/api/wines/*/reviews")
+                        .authenticated()
+
                         .requestMatchers("/api/users/**")
                         .authenticated()
 
