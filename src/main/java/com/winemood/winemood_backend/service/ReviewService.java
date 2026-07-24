@@ -13,4 +13,8 @@ public interface ReviewService {
     List<ReviewResponseDto> getWineReviews(Long wineId);
 
     List<UserReviewResponseDto> getCurrentUserReviews();
+
+    void updateReview(Long reviewId, CreateReviewRequestDto requestDto);
+
+    void deleteReview(Long reviewId);
 }

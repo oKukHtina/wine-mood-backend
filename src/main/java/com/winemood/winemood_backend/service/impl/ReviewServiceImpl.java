@@ -6,12 +6,15 @@ import com.winemood.winemood_backend.dto.response.UserReviewResponseDto;
 import com.winemood.winemood_backend.entity.Review;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
+import com.winemood.winemood_backend.exceptions.ReviewAlreadyExistsException;
+import com.winemood.winemood_backend.exceptions.ReviewNotFoundException;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.ReviewMapper;
 import com.winemood.winemood_backend.repository.ReviewRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.service.AuthenticatedUserService;
 import com.winemood.winemood_backend.service.ReviewService;
+import org.springframework.security.access.AccessDeniedException;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,19 +41,20 @@ public class ReviewServiceImpl implements ReviewService {
                 .findById(wineId)
                 .orElseThrow(() -> new WineNotFoundException(wineId));
 
-        Review review = reviewRepository
-                .findByUserAndWine(currentUser, wine)
-                .orElseGet(Review::new);
-
-        if (review.getId() == null) {
-            review.setUser(currentUser);
-            review.setWine(wine);
-            review.setCreatedAt(LocalDateTime.now());
+        if (reviewRepository.findByUserAndWine(currentUser, wine).isPresent()) {
+            throw new ReviewAlreadyExistsException();
         }
+
+        Review review = new Review();
+        LocalDateTime now = LocalDateTime.now();
+
+        review.setUser(currentUser);
+        review.setWine(wine);
+        review.setCreatedAt(now);
 
         review.setRating(requestDto.rating());
         review.setReviewText(requestDto.reviewText());
-        review.setUpdatedAt(LocalDateTime.now());
+        review.setUpdatedAt(now);
 
         reviewRepository.save(review);
         updateWineRating(wine);
@@ -75,6 +79,49 @@ public class ReviewServiceImpl implements ReviewService {
                 .findAllByUserOrderByCreatedAtDesc(currentUser);
 
         return reviewMapper.toUserReviewDtoList(reviews);
+    }
+
+    @Transactional
+    @Override
+    public void updateReview(Long reviewId, CreateReviewRequestDto requestDto) {
+        User currentUser = authenticatedUserService.getCurrentUser();
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
+
+        if (!review.getUser().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException(
+                    "You cannot edit someone else's review"
+            );
+        }
+        review.setRating(requestDto.rating());
+        review.setReviewText(requestDto.reviewText());
+        review.setUpdatedAt(LocalDateTime.now());
+
+        reviewRepository.save(review);
+
+        updateWineRating(review.getWine());
+    }
+
+    @Transactional
+    @Override
+    public void deleteReview(Long reviewId) {
+        User currentUser = authenticatedUserService.getCurrentUser();
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
+
+        if (!review.getUser().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException(
+                    "You cannot delete someone else's review"
+            );
+        }
+
+        Wine wine = review.getWine();
+
+        reviewRepository.delete(review);
+
+        updateWineRating(wine);
     }
 
     private void updateWineRating(Wine wine) {
