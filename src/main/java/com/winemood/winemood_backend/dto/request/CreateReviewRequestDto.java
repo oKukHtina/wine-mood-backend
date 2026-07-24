@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 public record CreateReviewRequestDto(
 
         @Schema(
-                description = "Rating from 1.00 to 5.00",
+                description = "Rating from 0.00 to 5.00",
                 example = "4.75"
         )
         @NotNull
-        @DecimalMin("1.00")
+        @DecimalMin("0.00")
         @DecimalMax("5.00")
         @Digits(integer = 1, fraction = 2)
         BigDecimal rating,
