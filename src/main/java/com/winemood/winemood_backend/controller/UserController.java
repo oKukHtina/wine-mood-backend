@@ -1,6 +1,7 @@
 package com.winemood.winemood_backend.controller;
 
 import com.winemood.winemood_backend.constants.swagger.UserSwaggerExamples;
+import com.winemood.winemood_backend.dto.request.CreateReviewRequestDto;
 import com.winemood.winemood_backend.dto.request.SaveQuizResultRequestDto;
 import com.winemood.winemood_backend.dto.response.FavoriteWineResponseDto;
 import com.winemood.winemood_backend.dto.response.QuizResultResponseDto;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -375,5 +377,77 @@ public class UserController {
     @GetMapping("/reviews")
     public List<UserReviewResponseDto> getCurrentUserReviews() {
         return reviewService.getCurrentUserReviews();
+    }
+
+    @PutMapping("/reviews/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(
+            summary = "Update current user's review",
+            description = "Updates an existing review created by the authenticated user."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Review successfully updated"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "You cannot edit someone else's review",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Review not found",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public void updateReview(
+            @PathVariable Long reviewId,
+            @Valid @RequestBody CreateReviewRequestDto requestDto
+    ) {
+        reviewService.updateReview(reviewId, requestDto);
+    }
+
+    @DeleteMapping("/reviews/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(
+            summary = "Delete current user's review",
+            description = "Deletes a review created by the authenticated user."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Review successfully deleted"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "You cannot delete someone else's review",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Review not found",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public void deleteReview(
+            @PathVariable Long reviewId
+    ) {
+        reviewService.deleteReview(reviewId);
     }
 }

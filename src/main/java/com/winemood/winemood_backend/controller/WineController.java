@@ -131,12 +131,12 @@ public class WineController {
     }
 
     @Operation(
-            summary = "Create or update review",
+            summary = "Create review",
             description = """
                     Creates a new review for the specified wine.
                                     
                     If the authenticated user has already reviewed this wine,
-                    the existing review is updated instead of creating a new one.
+                    409 exception.
                     """
     )
     @ApiResponses({
