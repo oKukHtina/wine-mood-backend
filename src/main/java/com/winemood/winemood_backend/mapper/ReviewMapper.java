@@ -13,6 +13,7 @@ public interface ReviewMapper {
 
     @Mapping(source = "user.name", target = "userName")
     @Mapping(source = "user.avatarUrl", target = "avatarUrl")
+    @Mapping(source = "user.id", target = "userId")
     ReviewResponseDto toDto(Review review);
 
     @Mapping(source = "id", target = "reviewId")

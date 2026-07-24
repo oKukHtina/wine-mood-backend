@@ -15,6 +15,12 @@ public record ReviewResponseDto(
         Long id,
 
         @Schema(
+                description = "User identifier",
+                example = "3"
+        )
+        Long userId,
+
+        @Schema(
                 description = "Reviewer name",
                 example = "Bob"
         )
