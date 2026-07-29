@@ -17,6 +17,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findByUserAndWine(User user, Wine wine);
 
+    long countByUser(User user);
+
     @Query("""
             SELECT AVG(r.rating)
             FROM Review r

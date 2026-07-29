@@ -11,12 +11,12 @@ import com.winemood.winemood_backend.exceptions.RegistrationException;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.UserMapper;
 import com.winemood.winemood_backend.mapper.WineMapper;
+import com.winemood.winemood_backend.repository.ReviewRepository;
 import com.winemood.winemood_backend.repository.UserRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.security.JwtUtil;
 import com.winemood.winemood_backend.service.AuthenticatedUserService;
 import com.winemood.winemood_backend.service.CloudinaryService;
-import com.winemood.winemood_backend.service.QuizResultService;
 import com.winemood.winemood_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Service
@@ -31,9 +32,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final WineRepository wineRepository;
+    private final ReviewRepository reviewRepository;
     private final CloudinaryService cloudinaryService;
     private final AuthenticatedUserService authenticatedUserService;
-    private final QuizResultService quizResultService;
     private final UserMapper userMapper;
     private final WineMapper wineMapper;
     private final PasswordEncoder passwordEncoder;
@@ -89,7 +90,10 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(authenticatedUser);
 
-        return userMapper.toDto(savedUser);
+        UserResponseDto dto = userMapper.toDto(savedUser);
+        dto.setReviewCount(reviewRepository.countByUser(savedUser));
+
+        return dto;
     }
 
     @Override
@@ -104,7 +108,10 @@ public class UserServiceImpl implements UserService {
         authenticatedUser.setAvatarPublicId(null);
         User savedUser = userRepository.save(authenticatedUser);
 
-        return userMapper.toDto(savedUser);
+        UserResponseDto dto = userMapper.toDto(savedUser);
+        dto.setReviewCount(reviewRepository.countByUser(savedUser));
+
+        return dto;
     }
 
     @Override
@@ -142,7 +149,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getCurrentUser() {
         User authenticatedUser = authenticatedUserService.getCurrentUser();
-        return userMapper.toDto(authenticatedUser);
+        UserResponseDto dto = userMapper.toDto(authenticatedUser);
+
+        dto.setReviewCount(reviewRepository.countByUser(authenticatedUser));
+        return dto;
     }
 
     private Wine getWine(Long wineId) {
