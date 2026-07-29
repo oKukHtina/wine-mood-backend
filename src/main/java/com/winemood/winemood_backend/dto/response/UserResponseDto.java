@@ -36,4 +36,10 @@ public class UserResponseDto {
             nullable = true
     )
     private String avatarUrl;
+
+    @Schema(
+            description = "Total number of reviews created by the user",
+            example = "12"
+    )
+    private long reviewCount;
 }
