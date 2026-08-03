@@ -5,11 +5,12 @@ import com.winemood.winemood_backend.dto.response.ApiResponseDto;
 import com.winemood.winemood_backend.dto.response.Meta;
 import com.winemood.winemood_backend.dto.response.WineCatalogResponseDto;
 import com.winemood.winemood_backend.dto.response.WineResponseDto;
+import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
+import com.winemood.winemood_backend.repository.FoodRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
-import com.winemood.winemood_backend.service.FavoriteService;
-import com.winemood.winemood_backend.service.WineService;
+import com.winemood.winemood_backend.service.*;
 import com.winemood.winemood_backend.specification.WineSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,7 +27,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class WineServiceImpl implements WineService {
     private final WineRepository wineRepository;
+    private final FoodRepository foodRepository;
     private final FavoriteService favoriteService;
+    private final DiscoveryAchievementService discoveryAchievementService;
+    private final WineViewHistoryService wineViewHistoryService;
+    private final AuthenticatedUserService authenticatedUserService;
 
     @Override
     public List<WineCatalogResponseDto> getAllWines(Pageable pageable) {
@@ -45,9 +51,16 @@ public class WineServiceImpl implements WineService {
     @Override
     public WineResponseDto getWineById(Long id) {
         Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
+        Wine wine = getWineEntityById(id);
+
+        User currentUser = authenticatedUserService.getCurrentUserOrNull();
+
+        if (currentUser != null) {
+            wineViewHistoryService.saveView(currentUser, wine);
+        }
 
         return favoriteService.toDtoWithFavorite(
-                getWineEntityById(id),
+                wine,
                 favoriteWineIds
         );
     }
@@ -122,6 +135,26 @@ public class WineServiceImpl implements WineService {
         }
 
         Page<Wine> page = wineRepository.findAll(spec, pageable);
+
+        User currentUser = authenticatedUserService.getCurrentUserOrNull();
+
+        if (page.hasContent() && currentUser != null) {
+            if (dto.getEvents() != null && !dto.getEvents().isEmpty()) {
+                discoveryAchievementService.handleEventSearch(currentUser);
+            }
+
+            if (dto.getFoodName() != null
+                    && !dto.getFoodName().isEmpty()) {
+
+                dto.getFoodName().stream()
+                        .map(foodRepository::findFirstByNameIgnoreCase)
+                        .flatMap(Optional::stream)
+                        .findFirst()
+                        .ifPresent(food ->
+                                discoveryAchievementService.handleFoodSearch(currentUser, food)
+                        );
+            }
+        }
 
         List<WineCatalogResponseDto> data = page.getContent()
                 .stream()

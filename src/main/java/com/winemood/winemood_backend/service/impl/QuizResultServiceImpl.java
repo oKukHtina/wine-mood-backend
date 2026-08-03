@@ -4,8 +4,10 @@ import com.winemood.winemood_backend.dto.response.QuizResultResponseDto;
 import com.winemood.winemood_backend.entity.QuizResult;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
+import com.winemood.winemood_backend.enums.AchievementCode;
 import com.winemood.winemood_backend.repository.QuizResultRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
+import com.winemood.winemood_backend.service.AchievementService;
 import com.winemood.winemood_backend.service.AuthenticatedUserService;
 import com.winemood.winemood_backend.service.FavoriteService;
 import com.winemood.winemood_backend.service.QuizResultService;
@@ -24,6 +26,7 @@ public class QuizResultServiceImpl implements QuizResultService {
     private final QuizResultRepository quizResultRepository;
     private final WineRepository wineRepository;
     private final AuthenticatedUserService authenticatedUserService;
+    private final AchievementService achievementService;
     private final FavoriteService favoriteService;
 
     @Override
@@ -48,6 +51,11 @@ public class QuizResultServiceImpl implements QuizResultService {
         quizResult.setWines(wines);
 
         quizResultRepository.save(quizResult);
+
+        achievementService.grantAchievement(
+                currentUser,
+                AchievementCode.FIRST_QUIZ
+        );
     }
 
     @Override

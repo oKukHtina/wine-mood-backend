@@ -6,12 +6,14 @@ import com.winemood.winemood_backend.dto.response.UserReviewResponseDto;
 import com.winemood.winemood_backend.entity.Review;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
+import com.winemood.winemood_backend.enums.AchievementCode;
 import com.winemood.winemood_backend.exceptions.ReviewAlreadyExistsException;
 import com.winemood.winemood_backend.exceptions.ReviewNotFoundException;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.ReviewMapper;
 import com.winemood.winemood_backend.repository.ReviewRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
+import com.winemood.winemood_backend.service.AchievementService;
 import com.winemood.winemood_backend.service.AuthenticatedUserService;
 import com.winemood.winemood_backend.service.ReviewService;
 import org.springframework.security.access.AccessDeniedException;
@@ -31,6 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final WineRepository wineRepository;
     private final AuthenticatedUserService authenticatedUserService;
+    private final AchievementService achievementService;
     private final ReviewMapper reviewMapper;
 
     @Transactional
@@ -58,6 +61,16 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.save(review);
         updateWineRating(wine);
+
+        achievementService.grantAchievement(
+                currentUser,
+                AchievementCode.FIRST_RATING
+        );
+
+        achievementService.grantAchievement(
+                currentUser,
+                AchievementCode.FIRST_REVIEW
+        );
     }
 
     @Override

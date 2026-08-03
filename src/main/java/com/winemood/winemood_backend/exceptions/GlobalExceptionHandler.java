@@ -64,6 +64,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler(AchievementNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAchievementNotFound(
+            AchievementNotFoundException ex,
+            WebRequest request
+    ) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage(),
+                extractPath(request)
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<ErrorResponse> handleFileUploadException(
             FileUploadException ex,
