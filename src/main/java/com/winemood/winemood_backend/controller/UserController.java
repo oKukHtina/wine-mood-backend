@@ -3,11 +3,9 @@ package com.winemood.winemood_backend.controller;
 import com.winemood.winemood_backend.constants.swagger.UserSwaggerExamples;
 import com.winemood.winemood_backend.dto.request.CreateReviewRequestDto;
 import com.winemood.winemood_backend.dto.request.SaveQuizResultRequestDto;
-import com.winemood.winemood_backend.dto.response.FavoriteWineResponseDto;
-import com.winemood.winemood_backend.dto.response.QuizResultResponseDto;
-import com.winemood.winemood_backend.dto.response.UserResponseDto;
-import com.winemood.winemood_backend.dto.response.UserReviewResponseDto;
+import com.winemood.winemood_backend.dto.response.*;
 import com.winemood.winemood_backend.exceptions.ErrorResponse;
+import com.winemood.winemood_backend.service.AchievementService;
 import com.winemood.winemood_backend.service.QuizResultService;
 import com.winemood.winemood_backend.service.ReviewService;
 import com.winemood.winemood_backend.service.UserService;
@@ -39,6 +37,8 @@ public class UserController {
     private final UserService userService;
     private final QuizResultService quizResultService;
     private final ReviewService reviewService;
+
+    private final AchievementService achievementService;
 
     @Operation(
             summary = "Upload user avatar",
@@ -449,5 +449,27 @@ public class UserController {
             @PathVariable Long reviewId
     ) {
         reviewService.deleteReview(reviewId);
+    }
+
+    @GetMapping("/me/achievements")
+    @Operation(
+            summary = "Get current user's achievements",
+            description = "Returns all achievements unlocked by the authenticated user."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Achievements successfully returned"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "User is not authenticated",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public List<AchievementResponseDto> getCurrentUserAchievements() {
+        return achievementService.getCurrentUserAchievements();
     }
 }

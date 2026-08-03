@@ -7,6 +7,7 @@ import com.winemood.winemood_backend.dto.request.UserRegistrationRequestDto;
 import com.winemood.winemood_backend.dto.response.*;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
+import com.winemood.winemood_backend.enums.AchievementCode;
 import com.winemood.winemood_backend.exceptions.RegistrationException;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.UserMapper;
@@ -15,6 +16,7 @@ import com.winemood.winemood_backend.repository.ReviewRepository;
 import com.winemood.winemood_backend.repository.UserRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.security.JwtUtil;
+import com.winemood.winemood_backend.service.AchievementService;
 import com.winemood.winemood_backend.service.AuthenticatedUserService;
 import com.winemood.winemood_backend.service.CloudinaryService;
 import com.winemood.winemood_backend.service.UserService;
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final ReviewRepository reviewRepository;
     private final CloudinaryService cloudinaryService;
     private final AuthenticatedUserService authenticatedUserService;
+    private final AchievementService achievementService;
     private final UserMapper userMapper;
     private final WineMapper wineMapper;
     private final PasswordEncoder passwordEncoder;
@@ -120,6 +123,11 @@ public class UserServiceImpl implements UserService {
 
         authenticatedUser.getFavoriteWines().add(getWine(wineId));
         userRepository.save(authenticatedUser);
+
+        achievementService.grantAchievement(
+                authenticatedUser,
+                AchievementCode.FIRST_FAVORITE
+        );
     }
 
     @Override

@@ -49,6 +49,9 @@ public class User implements UserDetails {
     )
     private List<QuizResult> quizResults = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<UserAchievement> achievements = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
