@@ -13,6 +13,7 @@ import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.UserMapper;
 import com.winemood.winemood_backend.mapper.WineMapper;
 import com.winemood.winemood_backend.repository.ReviewRepository;
+import com.winemood.winemood_backend.repository.UserAchievementRepository;
 import com.winemood.winemood_backend.repository.UserRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.security.JwtUtil;
@@ -34,6 +35,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final WineRepository wineRepository;
+    private final UserAchievementRepository userAchievementRepository;
     private final ReviewRepository reviewRepository;
     private final CloudinaryService cloudinaryService;
     private final AuthenticatedUserService authenticatedUserService;
@@ -160,6 +162,8 @@ public class UserServiceImpl implements UserService {
         UserResponseDto dto = userMapper.toDto(authenticatedUser);
 
         dto.setReviewCount(reviewRepository.countByUser(authenticatedUser));
+        dto.setAchievementCount(userAchievementRepository.countByUser(authenticatedUser));
+
         return dto;
     }
 
