@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserAchievementRepository extends JpaRepository<UserAchievement, Long> {
     boolean existsByUserAndAchievement(User user, Achievement achievement);
     List<UserAchievement> findAllByUserOrderByEarnedAtDesc(User user);
+
+    long countByUser(User user);
 }

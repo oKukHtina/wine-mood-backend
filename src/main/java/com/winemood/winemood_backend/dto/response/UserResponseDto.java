@@ -42,4 +42,10 @@ public class UserResponseDto {
             example = "12"
     )
     private long reviewCount;
+
+    @Schema(
+            description = "Total number of achievements unlocked by the user",
+            example = "5"
+    )
+    private long achievementCount;
 }
