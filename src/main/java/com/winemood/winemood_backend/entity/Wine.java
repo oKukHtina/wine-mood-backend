@@ -52,6 +52,9 @@ public class Wine {
     @Column(nullable = false, precision = 4, scale = 2)
     private BigDecimal rating = BigDecimal.ZERO;
 
+    @Column(nullable = false)
+    private Long viewCount = 0L;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "wine_events",

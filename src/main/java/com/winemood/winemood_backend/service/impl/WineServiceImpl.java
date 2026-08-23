@@ -54,10 +54,7 @@ public class WineServiceImpl implements WineService {
         Wine wine = getWineEntityById(id);
 
         User currentUser = authenticatedUserService.getCurrentUserOrNull();
-
-        if (currentUser != null) {
-            wineViewHistoryService.saveView(currentUser, wine);
-        }
+        wineViewHistoryService.saveView(currentUser, wine);
 
         return favoriteService.toDtoWithFavorite(
                 wine,
