@@ -18,6 +18,12 @@ import java.util.Set;
 @Schema(description = "Detailed wine information")
 public class WineResponseDto {
     @Schema(
+            description = "Number of times the wine card has been viewed",
+            example = "154"
+    )
+    private Long viewCount;
+
+    @Schema(
             description = "Wine identifier",
             example = "15"
     )

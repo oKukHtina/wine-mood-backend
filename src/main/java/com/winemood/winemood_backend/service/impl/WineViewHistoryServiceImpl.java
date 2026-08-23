@@ -3,6 +3,7 @@ package com.winemood.winemood_backend.service.impl;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
 import com.winemood.winemood_backend.entity.WineViewHistory;
+import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.repository.WineViewHistoryRepository;
 import com.winemood.winemood_backend.service.DiscoveryAchievementService;
 import com.winemood.winemood_backend.service.WineViewHistoryService;
@@ -16,21 +17,23 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class WineViewHistoryServiceImpl implements WineViewHistoryService {
     private final WineViewHistoryRepository wineViewHistoryRepository;
+    private final WineRepository wineRepository;
     private final DiscoveryAchievementService discoveryAchievementService;
 
     @Override
     @Transactional
     public void saveView(User user, Wine wine) {
-        if (wineViewHistoryRepository.existsByUserAndWine(user, wine)) {
-            return;
+        if (user != null
+                && !wineViewHistoryRepository.existsByUserAndWine(user, wine)) {
+            WineViewHistory history = new WineViewHistory();
+            history.setUser(user);
+            history.setWine(wine);
+            history.setViewedAt(LocalDateTime.now());
+
+            wineViewHistoryRepository.save(history);
+            discoveryAchievementService.handleWineView(user, wine);
         }
-
-        WineViewHistory history = new WineViewHistory();
-        history.setUser(user);
-        history.setWine(wine);
-        history.setViewedAt(LocalDateTime.now());
-
-        wineViewHistoryRepository.save(history);
-        discoveryAchievementService.handleWineView(user, wine);
+        wine.setViewCount(wine.getViewCount() + 1);
+        wineRepository.save(wine);
     }
 }
