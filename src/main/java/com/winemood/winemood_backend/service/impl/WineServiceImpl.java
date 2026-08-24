@@ -7,6 +7,7 @@ import com.winemood.winemood_backend.dto.response.WineCatalogResponseDto;
 import com.winemood.winemood_backend.dto.response.WineResponseDto;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
+import com.winemood.winemood_backend.enums.AnalyticsEventType;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.repository.FoodRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
@@ -20,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,6 +34,7 @@ public class WineServiceImpl implements WineService {
     private final DiscoveryAchievementService discoveryAchievementService;
     private final WineViewHistoryService wineViewHistoryService;
     private final AuthenticatedUserService authenticatedUserService;
+    private final AnalyticsEventService analyticsEventService;
 
     @Override
     public List<WineCatalogResponseDto> getAllWines(Pageable pageable) {
@@ -67,18 +70,28 @@ public class WineServiceImpl implements WineService {
         Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
         Wine currentWine = getWineEntityById(wineId);
 
-        return wineRepository.findRecommendations(
-                        currentWine.getCategory(),
-                        wineId,
-                        PageRequest.of(0, 4)
+        List<Wine> recommendations = wineRepository.findRecommendations(
+                currentWine.getCategory(),
+                wineId,
+                PageRequest.of(0, 4)
+        );
+
+        analyticsEventService.saveEvent(
+                AnalyticsEventType.RECOMMENDATIONS_SHOWN,
+                Map.of(
+                        "wine_id", wineId,
+                        "recommended_wine_ids",
+                        recommendations.stream()
+                                .map(Wine::getId)
+                                .toList()
                 )
-                .stream()
-                .map(
-                        wine -> favoriteService.toCatalogDtoWithFavorite(
-                                wine,
-                                favoriteWineIds
-                        )
-                )
+        );
+
+        return recommendations.stream()
+                .map(wine -> favoriteService.toCatalogDtoWithFavorite(
+                        wine,
+                        favoriteWineIds
+                ))
                 .toList();
     }
 

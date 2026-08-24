@@ -8,6 +8,7 @@ import com.winemood.winemood_backend.dto.response.*;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
 import com.winemood.winemood_backend.enums.AchievementCode;
+import com.winemood.winemood_backend.enums.AnalyticsEventType;
 import com.winemood.winemood_backend.exceptions.RegistrationException;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.UserMapper;
@@ -17,10 +18,7 @@ import com.winemood.winemood_backend.repository.UserAchievementRepository;
 import com.winemood.winemood_backend.repository.UserRepository;
 import com.winemood.winemood_backend.repository.WineRepository;
 import com.winemood.winemood_backend.security.JwtUtil;
-import com.winemood.winemood_backend.service.AchievementService;
-import com.winemood.winemood_backend.service.AuthenticatedUserService;
-import com.winemood.winemood_backend.service.CloudinaryService;
-import com.winemood.winemood_backend.service.UserService;
+import com.winemood.winemood_backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +40,7 @@ public class UserServiceImpl implements UserService {
     private final CloudinaryService cloudinaryService;
     private final AuthenticatedUserService authenticatedUserService;
     private final AchievementService achievementService;
+    private final AnalyticsEventService analyticsEventService;
     private final UserMapper userMapper;
     private final WineMapper wineMapper;
     private final PasswordEncoder passwordEncoder;
@@ -124,9 +124,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addFavorite(Long wineId) {
         User authenticatedUser = authenticatedUserService.getCurrentUser();
+        Wine wine = getWine(wineId);
 
-        authenticatedUser.getFavoriteWines().add(getWine(wineId));
+        boolean added = authenticatedUser.getFavoriteWines().add(wine);
+
+        if (!added) {
+            return;
+        }
+
         userRepository.save(authenticatedUser);
+
+        analyticsEventService.saveEvent(
+                AnalyticsEventType.FAVORITE,
+                Map.of(
+                        "wine_id", wineId,
+                        "action", "added"
+                )
+        );
 
         achievementService.grantAchievement(
                 authenticatedUser,
@@ -137,9 +151,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeFavorite(Long wineId) {
         User authenticatedUser = authenticatedUserService.getCurrentUser();
+        Wine wine = getWine(wineId);
 
-        authenticatedUser.getFavoriteWines().remove(getWine(wineId));
+        boolean removed = authenticatedUser.getFavoriteWines().remove(wine);
+
+        if (!removed) {
+            return;
+        }
+
         userRepository.save(authenticatedUser);
+
+        analyticsEventService.saveEvent(
+                AnalyticsEventType.FAVORITE,
+                Map.of(
+                        "wine_id", wineId,
+                        "action", "removed"
+                )
+        );
     }
 
     @Override
