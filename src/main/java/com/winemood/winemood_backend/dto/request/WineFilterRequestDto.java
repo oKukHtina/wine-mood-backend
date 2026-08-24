@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.Set;
 
 @Getter
@@ -14,6 +15,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Schema(description = "Wine filtering request")
 public class WineFilterRequestDto {
+    @Schema(
+            example = "[Verde]"
+    )
+    private String search;
+
     @Schema(
             example = "[\"RED\", \"ROSE\","
                     + " \"SPARKLING\",  \"PREMIUM\"]"

@@ -19,6 +19,4 @@ public interface WineService {
             WineFilterRequestDto filterRequest,
             Pageable pageable
     );
-
-    ApiResponseDto<List<WineCatalogResponseDto>> searchWines(String query, Pageable pageable);
 }

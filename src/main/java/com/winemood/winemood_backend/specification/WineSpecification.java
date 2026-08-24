@@ -170,4 +170,18 @@ public class WineSpecification {
                     .in(foodNames);
         };
     }
+
+    public static Specification<Wine> hasName(String search) {
+        return (root, query, cb) -> {
+
+            if (search == null || search.trim().isEmpty()) {
+                return null;
+            }
+
+            return cb.like(
+                    cb.lower(root.get("name")),
+                    "%" + search.trim().toLowerCase() + "%"
+            );
+        };
+    }
 }
