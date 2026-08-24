@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,4 +34,11 @@ public class QuizResult {
     )
     @OrderColumn(name = "position")
     private List<Wine> wines = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "quizResult",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<QuizResultAnswer> answers = new ArrayList<>();
 }

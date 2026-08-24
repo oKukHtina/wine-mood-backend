@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(requestDto.getEmail());
         user.setName(requestDto.getName());
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        user.setCreatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
         return userMapper.toRegisterDto(savedUser);
