@@ -100,6 +100,12 @@ public class WineServiceImpl implements WineService {
         Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
         Specification<Wine> spec = Specification.unrestricted();
 
+        if (dto.getSearch() != null && !dto.getSearch().trim().isEmpty()) {
+            spec = spec.and(
+                    WineSpecification.hasName(dto.getSearch())
+            );
+        }
+
         if (dto.getWineTypes() != null && !dto.getWineTypes().isEmpty()) {
             spec = spec.and(WineSpecification.hasWineTypes(dto.getWineTypes()));
         }
@@ -165,62 +171,6 @@ public class WineServiceImpl implements WineService {
                         );
             }
         }
-
-        List<WineCatalogResponseDto> data = page.getContent()
-                .stream()
-                .map(
-                        wine -> favoriteService.toCatalogDtoWithFavorite(
-                                wine,
-                                favoriteWineIds
-                        )
-                )
-                .toList();
-
-        Meta meta = new Meta(
-                page.getTotalElements(),
-                page.getTotalPages(),
-                page.getNumber(),
-                page.getSize()
-        );
-
-        return new ApiResponseDto<>(data, meta);
-    }
-
-    @Override
-    public ApiResponseDto<List<WineCatalogResponseDto>> searchWines(String query, Pageable pageable) {
-        Set<Long> favoriteWineIds = favoriteService.getFavoriteWineIds();
-
-        if (query == null || query.trim().isEmpty()) {
-            return new ApiResponseDto<>(
-                    List.of(),
-                    new Meta(
-                            0,
-                            0,
-                            pageable.getPageNumber(),
-                            pageable.getPageSize()
-                    )
-            );
-        }
-
-        String q = query.trim();
-
-        Optional<Wine> exact = wineRepository.findByNameIgnoreCase(q);
-
-        if (exact.isPresent()) {
-            Wine wine = exact.get();
-
-            return new ApiResponseDto<>(
-                    List.of(
-                            favoriteService.toCatalogDtoWithFavorite(
-                                    wine,
-                                    favoriteWineIds
-                            )
-                    ),
-                    new Meta(1, 1, 0, 1)
-            );
-        }
-
-        Page<Wine> page = wineRepository.searchByName(q, pageable);
 
         List<WineCatalogResponseDto> data = page.getContent()
                 .stream()
