@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -33,6 +34,9 @@ public class User implements UserDetails {
 
     @Column(name = "avatar_public_id")
     private String avatarPublicId;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @ManyToMany
     @JoinTable(

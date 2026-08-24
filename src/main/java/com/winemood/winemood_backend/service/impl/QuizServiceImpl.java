@@ -11,6 +11,7 @@ import com.winemood.winemood_backend.service.FavoriteService;
 import com.winemood.winemood_backend.service.QuizResultService;
 import com.winemood.winemood_backend.service.QuizService;
 import org.springframework.stereotype.Service;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,8 @@ public class QuizServiceImpl implements QuizService {
         quizResultService.saveQuizResult(
                 resultWines.stream()
                         .map(Wine::getId)
-                        .toList()
+                        .toList(),
+                answers
         );
 
         return resultWines.stream()
