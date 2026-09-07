@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -110,7 +111,7 @@ public class WineResponseDto {
 
     private AcidityResponseDto acidity;
 
-    private Set<FoodResponseDto> foodPairings;
+    private List<FoodResponseDto> foodPairings;
 
     private WineStyleResponseDto wineStyle;
 }

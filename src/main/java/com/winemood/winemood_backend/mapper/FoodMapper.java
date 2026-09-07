@@ -6,6 +6,8 @@ import com.winemood.winemood_backend.entity.Food;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring",
@@ -17,7 +19,12 @@ public interface FoodMapper {
     @Mapping(source = "foodCategory", target = "foodCategory")
     FoodResponseDto toDto(Food food);
 
-    Set<FoodResponseDto> toDtoSet(Set<Food> foods);
+    default List<FoodResponseDto> toDtoList(Set<Food> foods) {
+        return foods.stream()
+                .sorted(Comparator.comparing(Food::getName))
+                .map(this::toDto)
+                .toList();
+    }
 
     FoodFilterOptionResponseDto toFilterDto(Food food);
 
