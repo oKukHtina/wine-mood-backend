@@ -40,4 +40,6 @@ public interface WineMapper {
     @Mapping(source = "tasteProfile.sweetnessLevel", target = "sweetnessLevel")
     @Mapping(target = "favorite", ignore = true)
     WineCatalogResponseDto toCatalogDto(Wine wine);
+
+
 }
