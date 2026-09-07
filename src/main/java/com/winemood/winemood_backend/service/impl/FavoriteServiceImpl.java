@@ -2,6 +2,7 @@ package com.winemood.winemood_backend.service.impl;
 
 import com.winemood.winemood_backend.dto.response.WineCatalogResponseDto;
 import com.winemood.winemood_backend.dto.response.WineResponseDto;
+import com.winemood.winemood_backend.entity.FavoriteWine;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
 import com.winemood.winemood_backend.mapper.WineMapper;
@@ -25,9 +26,9 @@ public class FavoriteServiceImpl implements FavoriteService {
         if (user == null) {
             return Set.of();
         }
-
         return user.getFavoriteWines()
                 .stream()
+                .map(FavoriteWine::getWine)
                 .map(Wine::getId)
                 .collect(Collectors.toSet());
     }
