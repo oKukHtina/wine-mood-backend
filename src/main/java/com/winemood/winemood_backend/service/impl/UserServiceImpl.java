@@ -5,6 +5,8 @@ import com.winemood.winemood_backend.constants.SecurityConstants;
 import com.winemood.winemood_backend.dto.request.UserLoginRequestDto;
 import com.winemood.winemood_backend.dto.request.UserRegistrationRequestDto;
 import com.winemood.winemood_backend.dto.response.*;
+import com.winemood.winemood_backend.entity.FavoriteWine;
+import com.winemood.winemood_backend.entity.FavoriteWineId;
 import com.winemood.winemood_backend.entity.User;
 import com.winemood.winemood_backend.entity.Wine;
 import com.winemood.winemood_backend.enums.AchievementCode;
@@ -13,10 +15,7 @@ import com.winemood.winemood_backend.exceptions.RegistrationException;
 import com.winemood.winemood_backend.exceptions.WineNotFoundException;
 import com.winemood.winemood_backend.mapper.UserMapper;
 import com.winemood.winemood_backend.mapper.WineMapper;
-import com.winemood.winemood_backend.repository.ReviewRepository;
-import com.winemood.winemood_backend.repository.UserAchievementRepository;
-import com.winemood.winemood_backend.repository.UserRepository;
-import com.winemood.winemood_backend.repository.WineRepository;
+import com.winemood.winemood_backend.repository.*;
 import com.winemood.winemood_backend.security.JwtUtil;
 import com.winemood.winemood_backend.service.*;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +34,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final WineRepository wineRepository;
+    private final FavoriteWineRepository favoriteWineRepository;
     private final UserAchievementRepository userAchievementRepository;
     private final ReviewRepository reviewRepository;
     private final CloudinaryService cloudinaryService;
@@ -126,13 +126,19 @@ public class UserServiceImpl implements UserService {
         User authenticatedUser = authenticatedUserService.getCurrentUser();
         Wine wine = getWine(wineId);
 
-        boolean added = authenticatedUser.getFavoriteWines().add(wine);
+        FavoriteWineId favoriteWineId = new FavoriteWineId(authenticatedUser.getId(), wineId);
 
-        if (!added) {
+        if (favoriteWineRepository.existsById(favoriteWineId)) {
             return;
         }
 
-        userRepository.save(authenticatedUser);
+        FavoriteWine favoriteWine = new FavoriteWine();
+        favoriteWine.setId(favoriteWineId);
+        favoriteWine.setUser(authenticatedUser);
+        favoriteWine.setWine(wine);
+        favoriteWine.setCreatedAt(LocalDateTime.now());
+
+        favoriteWineRepository.save(favoriteWine);
 
         analyticsEventService.saveEvent(
                 AnalyticsEventType.FAVORITE,
@@ -151,15 +157,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeFavorite(Long wineId) {
         User authenticatedUser = authenticatedUserService.getCurrentUser();
-        Wine wine = getWine(wineId);
 
-        boolean removed = authenticatedUser.getFavoriteWines().remove(wine);
+        FavoriteWineId favoriteWineId = new FavoriteWineId(authenticatedUser.getId(), wineId);
 
-        if (!removed) {
+        if (!favoriteWineRepository.existsById(favoriteWineId)) {
             return;
         }
-
-        userRepository.save(authenticatedUser);
+        favoriteWineRepository.deleteById(favoriteWineId);
 
         analyticsEventService.saveEvent(
                 AnalyticsEventType.FAVORITE,
@@ -174,8 +178,10 @@ public class UserServiceImpl implements UserService {
     public FavoriteWineResponseDto getFavoriteWines() {
         User authenticatedUser = authenticatedUserService.getCurrentUser();
 
-        List<WineCatalogResponseDto> wines = authenticatedUser.getFavoriteWines()
+        List<WineCatalogResponseDto> wines = favoriteWineRepository
+                .findByUserIdOrderByCreatedAtDesc(authenticatedUser.getId())
                 .stream()
+                .map(FavoriteWine::getWine)
                 .map(wine -> {
                     WineCatalogResponseDto dto = wineMapper.toCatalogDto(wine);
                     dto.setFavorite(true);

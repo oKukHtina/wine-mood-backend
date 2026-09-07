@@ -38,13 +38,12 @@ public class User implements UserDetails {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToMany
-    @JoinTable(
-            name = "favorite_wines",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "wine_id")
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private Set<Wine> favoriteWines = new HashSet<>();
+    private List<FavoriteWine> favoriteWines = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "user",
