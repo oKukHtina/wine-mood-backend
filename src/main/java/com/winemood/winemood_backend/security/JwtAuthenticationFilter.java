@@ -2,6 +2,7 @@ package com.winemood.winemood_backend.security;
 
 import com.winemood.winemood_backend.constants.SecurityConstants;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,6 +69,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                       "message": "Token has expired"
                     }
                     """);
+        } catch (JwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("""
+            {
+              "error": "Unauthorized",
+              "message": "Invalid token"
+            }
+            """);
         }
     }
 }
