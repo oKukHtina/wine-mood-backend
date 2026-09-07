@@ -1,6 +1,7 @@
 package com.winemood.winemood_backend.config;
 
 import com.winemood.winemood_backend.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,18 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("""
+                            {
+                              "error": "Unauthorized",
+                              "message": "Authentication required"
+                            }
+                            """);
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
