@@ -110,6 +110,8 @@ public class WineController {
     )
     public ApiResponseDto<List<WineCatalogResponseDto>> filterWines(
             @RequestBody WineFilterRequestDto filterRequest,
+            @ParameterObject
+            @PageableDefault(page = 0, size = 20, sort = "id")
             Pageable pageable
     ) {
         return wineService.filterWines(filterRequest, pageable);
